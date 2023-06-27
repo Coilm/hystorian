@@ -363,7 +363,6 @@ class HyFile:
         for k, v in new_attrs.items():
             if isinstance(v, HyPath):
                 v = v.path
-            print(k, v)
             self.attrs[out_folder_location] = (k, v)
 
     def _write_kwargs_as_attributes(
