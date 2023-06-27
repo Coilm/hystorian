@@ -1,3 +1,4 @@
+import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -39,3 +40,12 @@ def conversion_metadata(value):
 
 def check_extension(regex: str, filepath: Path) -> bool:
     return re.match(regex, filepath.suffix) is not None
+
+
+def find_common_path(pathlist):
+    com_pref = os.path.commonprefix([str(pathlist[i]) for i in range(len(pathlist))])
+    if "/" not in com_pref:
+        return pathlist
+    else:
+        n = com_pref.rfind("/")
+        return [str(str(pathlist[i])[n + 1 :]) for i in range(len(pathlist))]
