@@ -549,7 +549,7 @@ class HyFile:
         self._require_group(f"datasets/{path.stem}")
         self._generate_deep_groups(extracted_values.data, self.file[f"datasets/{path.stem}"])
 
-        self.file["metadata"].create_dataset(path.stem, data=str(extracted_values.metadata))
+        self._create_dataset((path.stem, str(extracted_values.metadata)), self.file["metadata"])
 
         self._generate_deep_attributes(extracted_values.metadata, self.file[f"metadata/{path.stem}"])
         self._generate_deep_attributes(extracted_values.attributes, self.file[f"datasets/{path.stem}"])
