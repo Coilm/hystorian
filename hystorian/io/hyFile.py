@@ -465,7 +465,7 @@ class HyFile:
             current group searched
 
         Returns
-        ------
+        -------
         path_list : list
             list of paths to datafiles
         """
