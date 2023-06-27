@@ -11,6 +11,12 @@ from hystorian.io import hyFile, utils
 filepath = pathlib.Path("tests/test_files/test.hdf5")
 
 
+@pytest.fixture(autouse=True)
+def teardown_module():
+    if filepath.is_file():
+        os.remove(filepath)
+
+
 class TestHyFileConversion:
     def test_extraction_ibw(self):
         path = pathlib.Path("tests/test_files/raw_files/test_ibw.ibw")
