@@ -11,76 +11,6 @@ from skimage.transform import warp as sk_warp
 MOTIONS_TYPES = Literal["translation", "euclidean", "affine", "homography"]
 
 
-def generate_warp_matrix(img=None, offset=[0, 0], angle=0, scale=[1, 1], shear=[0, 0]):
-    C = np.eye(3, 3, dtype=np.float32)
-    Cinv = np.eye(3, 3, dtype=np.float32)
-
-    if img is not None:
-        C[0, 2] = -0.5 * img.shape[1]
-        C[1, 2] = -0.5 * img.shape[0]
-
-        Cinv[0, 2] = 0.5 * img.shape[1]
-        Cinv[1, 2] = 0.5 * img.shape[0]
-
-    T = np.eye(3, 3, dtype=np.float32)
-    T[0, 2] = offset[0]
-    T[1, 2] = offset[1]
-
-    S = np.eye(3, 3, dtype=np.float32)
-    S[0, 0] = scale[0]
-    S[1, 1] = scale[1]
-
-    Z = np.eye(3, 3, dtype=np.float32)
-    Z[0, 1] = shear[0]
-    Z[1, 0] = shear[1]
-
-    R = np.eye(3, 3, dtype=np.float32)
-    R[0, 0] = np.cos(np.deg2rad(angle))
-    R[0, 1] = -np.sin(np.deg2rad(angle))
-    R[1, 0] = np.sin(np.deg2rad(angle))
-    R[1, 1] = np.cos(np.deg2rad(angle))
-
-    warp_matrix = np.matmul(T, np.matmul(np.matmul(Cinv, np.matmul(R, np.matmul(S, Z))), C))
-
-    return warp_matrix
-
-
-def warp_image(
-    img,
-    tform,
-    order=None,
-    mode: Literal["constant", "edge", "symmetric", "reflect", "wrap"] = "constant",
-    cval=0.0,
-    preserve_range=False,
-):
-    tmp2 = np.copy(tform)
-
-    if tform.shape[0] != tform.shape[1]:
-        tmp2 = np.eye(3)
-        tmp2[:2, :] = tform
-
-    out_img = transform.warp(img, tmp2, mode=mode, cval=cval, preserve_range=preserve_range)
-    return out_img
-
-
-def generate_transform_xy_single(
-    img,
-    img_orig,
-    warp_matrix,
-    warp_mode: MOTIONS_TYPES = "translation",
-    termination_eps=1e-5,
-    number_of_iterations=10000,
-):
-    criteria = (number_of_iterations, termination_eps)
-
-    _warp_matrix = np.copy(warp_matrix)
-    # _warp_matrix = _warp_matrix[:2, :]
-
-    _warp_matrix = find_transform_ECC(img_orig, img, _warp_matrix, warp_mode, criteria, None, 1)
-
-    return warp_matrix
-
-
 def find_transform_ECC(
     src,
     dst,
@@ -122,8 +52,10 @@ def find_transform_ECC(
 
     dx = np.array([[-0.5, 0.0, 0.5]])
 
-    gradient_x = convolve2d(dst, dx, mode="same")
-    gradient_y = convolve2d(dst, dx.transpose(), mode="same")
+    gradient_x, gradient_y = np.gradient(dst, edge_order=2)
+    # gradient_y = np.gradient(dst, axis=1)
+    # gradient_x = convolve2d(dst, dx, mode="same")
+    # gradient_y = convolve2d(dst, dx.transpose(), mode="same")
 
     rho = -1
     last_rho = -termination_eps
@@ -153,26 +85,11 @@ def find_transform_ECC(
             image_warped = np.ma.array(image_warped, mask=input_mask)
             src = np.ma.array(src, mask=input_mask)
 
-        img_mean = np.mean(image_warped)
-        img_std = np.std(image_warped)
-        src_mean = np.mean(src)
-        src_std = np.std(src)
+        image_warped = image_warped - np.mean(image_warped)
+        template_zm = src - np.mean(src)
 
-        image_warped = image_warped - img_mean
-        template_zm = src - src_mean
-
-        if np.ma.is_masked(image_warped):
-            img_count = image_warped.count()
-        else:
-            img_count = image_warped.size
-
-        if np.ma.is_masked(src):
-            src_count = src.count()
-        else:
-            src_count = src.size
-
-        img_norm = np.sqrt(img_count * img_std**2)
-        src_norm = np.sqrt(src_count * src_std**2)
+        img_norm = np.linalg.norm(image_warped)  # np.sqrt(img_count * img_std**2)
+        src_norm = np.linalg.norm(src)  # np.sqrt(src_count * src_std**2)
 
         match motion_type:
             case "translation":
@@ -187,7 +104,7 @@ def find_transform_ECC(
         hessian = project_onto_jacobian_ECC(jacobian, jacobian)
         hessian_inv = np.linalg.inv(hessian)
 
-        correlation = np.trace(template_zm.transpose() @ image_warped)  # Frobenius inner product
+        correlation = template_zm.ravel().dot(image_warped.ravel())
 
         last_rho = rho
         rho = correlation / (src_norm * img_norm)
@@ -198,15 +115,16 @@ def find_transform_ECC(
         image_projection = project_onto_jacobian_ECC(jacobian, image_warped)
         template_projection = project_onto_jacobian_ECC(jacobian, template_zm)
 
-        image_projection_hessian = hessian_inv * image_projection
+        image_projection_hessian = hessian_inv @ image_projection
 
-        lambda_n = img_norm**2 - np.sum(image_projection.dot(image_projection_hessian))
-        lambda_d = correlation - np.sum(template_projection.dot(image_projection_hessian))
+        lambda_n = img_norm**2 - image_projection.ravel().dot(image_projection_hessian.ravel())
+
+        lambda_d = correlation - template_projection.ravel().dot(image_projection_hessian.ravel())
 
         if lambda_d < 0:
             rho = -1
             raise ValueError(
-                "The algorithm stopped before its convergence. The correlation is going to be minimized. Images may be uncorrelated or non-overlapped."
+                f"The algorithm stopped before its convergence. lambda_d negative: {lambda_d}\n The correlation is going to be minimized. Images may be uncorrelated or non-overlapped."
             )
 
         lambda_ = lambda_n / lambda_d
@@ -214,9 +132,9 @@ def find_transform_ECC(
         error = lambda_ * template_zm - image_warped
         error_projection = project_onto_jacobian_ECC(jacobian, error)
         delta_p = hessian_inv * error_projection
-
+        print(delta_p)
         map = update_warping_matrix_ECC(map, delta_p, motion_type)
-        print(map)
+
     return map
 
 
@@ -306,8 +224,10 @@ def project_onto_jacobian_ECC(src1, src2):
     if src1.shape[1] != src2.shape[1]:
         w = src2.shape[1]
         dst = []
+        src2_ = src2.ravel()
         for i in range(src1.shape[1] // src2.shape[1]):
-            dst.append(np.trace(src2.transpose() @ src1[:, i * w : (i + 1) * w]))  # Frobenius inner product
+            tmp = src2_.dot(src1[:, i * w : (i + 1) * w].ravel())
+            dst.append(tmp)
 
         return np.array(dst)
 
@@ -320,9 +240,7 @@ def project_onto_jacobian_ECC(src1, src2):
         dst_[i * (dst.shape[0] + 1)] = np.power(np.linalg.norm(mat), 2)
 
         for j in range(i + 1, dst.shape[1]):
-            dst_[i * dst.shape[1] + j] = np.trace(
-                mat.transpose() @ src2[:, j * w : (j + 1) * w]
-            )  # Frobenius inner product
+            dst_[i * dst.shape[1] + j] = mat.ravel().dot(src2[:, j * w : (j + 1) * w].ravel())
             dst_[j * dst.shape[1] + i] = dst_[i * dst.shape[1] + j]
 
     dst = dst_.reshape((src1.shape[1] // src1.shape[0], src1.shape[1] // src1.shape[0]))
