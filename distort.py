@@ -8,7 +8,6 @@ from skimage.filters import gaussian as sk_gaussian
 from skimage.transform import AffineTransform
 from skimage.transform import warp as sk_warp
 
-# Test GPG KEY
 MOTIONS_TYPES = Literal["translation", "euclidean", "affine", "homography"]
 
 
