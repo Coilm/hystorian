@@ -232,7 +232,9 @@ class HyFile:
     def read(self, path: str | HyPath) -> npt.ArrayLike:
         pass
 
-    def read(self, path: Optional[str | HyPath] = None) -> list[str] | h5py.Datatype | npt.ArrayLike:
+    def read(
+        self, path: Optional[str | HyPath] = None, search: bool = False
+    ) -> list[str] | h5py.Datatype | npt.ArrayLike:
         """Wrapper around the __getitem__ of h5py. Directly returns the keys of the sub-groups if the path lead to an h5py.Group, otherwise directly load the dataset.
         This allows to get a list of keys to the folders without calling .keys(), and to the data without [()] therefore the way to call the keys or the data are the same.
         And therefore the user does not need to change the call between .keys() and [()] to navigate the hierarchical structure.
@@ -247,6 +249,10 @@ class HyFile:
         list[str] | h5py.Datatype | npt.ArrayLike
             If the path lead to Groups, will return a list of the subgroups, if it lead to a Dataset containing data, it will directly return the data, and if it is an empty Dataset, will return its Datatype.
         """
+        if search and isinstance(path, str):
+            paths = self.path_search(path)
+            return [self.read(p, search=False) for p in paths]
+
         if path is None:
             return list(self.file.keys())
 
@@ -427,7 +433,7 @@ class HyFile:
 
         self._write_extracted_data(path, extracted)
 
-    def path_search(self, criterion: str | list[str] = "*"):
+    def path_search(self, criterion: str | list[str] = ".*") -> list[HyPath]:
         if not isinstance(criterion, list):
             criterion = [criterion]
 
@@ -436,7 +442,7 @@ class HyFile:
         correct_path = []
         for criteria in criterion:
             for path in all_path:
-                if re.match(criteria, path) is not None:
+                if re.search(criteria, path) is not None:
                     correct_path.append(HyPath(path))
 
         return correct_path
