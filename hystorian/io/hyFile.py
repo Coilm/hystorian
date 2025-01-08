@@ -442,7 +442,7 @@ class HyFile:
         correct_path = []
         for criteria in criterion:
             for path in all_path:
-                if re.match(criteria, path) is not None:
+                if re.search(criteria, path) is not None:
                     correct_path.append(HyPath(path))
 
         return correct_path
