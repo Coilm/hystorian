@@ -32,3 +32,6 @@ ipykernel = "^6.23.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pylint.format]
+max-line-length = 120
