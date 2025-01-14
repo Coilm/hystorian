@@ -234,7 +234,7 @@ class HyFile:
         """
         if search and isinstance(path, str):
             paths = self.path_search(path)
-            return [self.read(p, search=False) for p in paths]
+            return np.array([self.read(p, search=False) for p in paths])
 
         if path is None:
             return list(self.file.keys())
