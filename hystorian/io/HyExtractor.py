@@ -39,9 +39,7 @@ def add_converter(name: str, f_check: Callable, f_converter: Callable):
     if name not in extractor_registery:
         extractor_registery[name] = (f_check, f_converter)
     else:
-        warnings.warn(
-            "A converter already exist under this name. Use another name or remove it using 'remove_converter'."
-        )
+        warnings.warn("A converter already exist under this name. Use another name or remove it using 'remove_converter'.")
 
 
 def remove_converter(name: str):

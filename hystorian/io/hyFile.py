@@ -151,9 +151,7 @@ class HyFile:
         """
 
         if mode not in ["r", "r+", "w", "w-", "a"]:
-            raise TypeError(
-                "{mode} is not a valid file permission.\n Valid permissions are: 'r', 'r+', 'w', 'w-' or 'a'"
-            )
+            raise TypeError("{mode} is not a valid file permission.\n Valid permissions are: 'r', 'r+', 'w', 'w-' or 'a'")
         self.path = Path(path)
 
         if self.path.is_file():
@@ -232,9 +230,7 @@ class HyFile:
     def read(self, path: str | HyPath) -> npt.ArrayLike:
         pass
 
-    def read(
-        self, path: Optional[str | HyPath] = None, search: bool = False
-    ) -> list[str] | h5py.Datatype | npt.ArrayLike:
+    def read(self, path: Optional[str | HyPath] = None, search: bool = False) -> list[str] | h5py.Datatype | npt.ArrayLike:
         """Wrapper around the __getitem__ of h5py. Directly returns the keys of the sub-groups if the path lead to an h5py.Group, otherwise directly load the dataset.
         This allows to get a list of keys to the folders without calling .keys(), and to the data without [()] therefore the way to call the keys or the data are the same.
         And therefore the user does not need to change the call between .keys() and [()] to navigate the hierarchical structure.
@@ -310,9 +306,7 @@ class HyFile:
             result = tuple([result])
 
         if len(output_names) != len(result):
-            raise ValueError(
-                f"Error: Unequal amount of outputs ({len(result)}) and output names ({len(output_names)})."
-            )
+            raise ValueError(f"Error: Unequal amount of outputs ({len(result)}) and output names ({len(output_names)}).")
 
         num_proc = len(self.read("process"))
 
@@ -336,7 +330,7 @@ class HyFile:
 
     def multiple_apply(self, function, list_args, /, output_names=None, smart=False, increment_proc=True, **kwargs):
         if output_names is None:
-            output_names = find_common_path(list_args) 
+            output_names = find_common_path(list_args)
 
         for args, output in zip(list_args, output_names):
             self.apply(function, args, increment_proc=increment_proc, output_names=output, **kwargs)

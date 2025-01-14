@@ -30,6 +30,3 @@ def gauss_area(x, y):
 
         area = area + x1 * y2 - x2 * y1
     return abs(area / 2.0)
-
-
-
