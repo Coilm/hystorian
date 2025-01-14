@@ -33,11 +33,14 @@ class HyPath:
 
 
 class HyApply:
-    def __init__(self, file, func: Callable, args: tuple[Any], kwargs: dict[str, Any] = {}):
+    def __init__(self, file, func: Callable, args: tuple[Any], kwargs: Optional[dict[str, Any]] = None):
         self.file = file
         self.func = func
         self.args = args
-        self.kwargs = kwargs
+        if kwargs is None:
+            self.kwargs = {}
+        else:
+            self.kwargs = kwargs
 
     def apply(self):
         result = self.func(
@@ -213,22 +216,6 @@ class HyFile:
             return f"process/{processes[-1]}"
         else:
             return
-
-    @overload
-    def read(self) -> list[str]:
-        pass
-
-    @overload
-    def read(self, path: str | HyPath) -> list[str]:
-        pass
-
-    @overload
-    def read(self, path: str | HyPath) -> h5py.Datatype:
-        pass
-
-    @overload
-    def read(self, path: str | HyPath) -> npt.ArrayLike:
-        pass
 
     def read(self, path: Optional[str | HyPath] = None, search: bool = False) -> list[str] | h5py.Datatype | npt.ArrayLike:
         """Wrapper around the __getitem__ of h5py. Directly returns the keys of the sub-groups if the path lead to an h5py.Group, otherwise directly load the dataset.
