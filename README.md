@@ -1,36 +1,48 @@
 # What is Hystorian?
 
-Keeping track of the post-treatement done on our data can sometimes be cumbersome.
+Keeping track of post-treatment done on scientific data can be cumbersome.
 
-Hystorian is a project born from our AFM group to solve this issue. It is a python package with two main functionalities:
+**Hystorian** is a Python package developed by our AFM group to address this issue. It provides two main functionalities:
 
-1. It handles multiple file format and converted all of them into uniformized hdf5 files. 
-2. It keeps track of the processing done on the data. 
+1. **Unified Data Format:** Handles multiple file formats (AFM, SPM, etc.) and converts them into uniform HDF5 files.
+2. **Processing History Tracking:** Keeps track of all processing steps performed on the data, storing parameters and results in the HDF5 file.
 
-Find the link to the paper here: http://dx.doi.org/10.1016/j.ultramic.2021.113345
+Find the link to the paper here: [http://dx.doi.org/10.1016/j.ultramic.2021.113345](http://dx.doi.org/10.1016/j.ultramic.2021.113345)
 
-We would be gratefull if you cited it if it was usefull for your research
+If you use Hystorian in your research, please cite the paper.
 
-You can install the package using pip, you can find it here https://pypi.org/project/hystorian/.
+## Installation
 
-Simply run: ```pip install hystorian```
+You can install the package using pip:
 
-## Structure of an hdf5 file
-An hdf5 file has a tree-like structure consisting of groups (folders) and datasets. Each groups and datasets can have attributes attached to them. An attribute is a small metadata containing informations about the corresponding dataset or group. Here we use them to store general information about the data or parameters of the post-processing.
+```pip install hystorian```
 
-The tree-structure we use in Hystorian is the following :
-1. A dataset group, containing all the raw data you want to regroup inside a single hdf5.
-2. A metadata group, containing the metadatas of the initial files.
-3. A process group, containing the data processed from the original data, or from other processed data.
+Documentation is available at: [https://hystorian.readthedocs.io/en/latest/](https://hystorian.readthedocs.io/en/latest/)
 
-## m_apply
+## Structure of an HDF5 File
 
-Our goal was to streamline the process and make the usage of Hystorian as seamless as possible for people already using Python. The key to this is the [`m_apply`](/Functions/Core/m_apply) function. It allows the application of any usual python function working on array on a datasets inside an hdf5 and to write the results into the same hdf5, while keeping all the key arguments of the function stored with the datasets inside the hdf5 file. Tutorials below show you how to use it in real case examples.
+An HDF5 file has a tree-like structure consisting of groups (folders) and datasets. Each group and dataset can have attributes attached, which are used to store metadata and processing parameters.
 
-## Tutorials
+The structure used in Hystorian is:
 
-A few tutorial were written by R.Bulanadi and can be found in the examples folder of the project, or in the links below:
+1. **Dataset group:** Contains all raw data grouped inside a single HDF5 file.
+2. **Metadata group:** Contains metadata from the original files.
+3. **Process group:** Contains data processed from the original or other processed data, along with processing parameters.
 
-* [Basic](https://gitlab.unige.ch/paruch-group/hystorian/-/wikis/tutorial/basic)
-* [Intermediate](https://gitlab.unige.ch/paruch-group/hystorian/-/wikis/tutorial/intermediate)
-* [Programming](https://gitlab.unige.ch/paruch-group/hystorian/-/wikis/tutorial/programming)
+## Usage Overview
+
+Hystorian provides modules for:
+
+- **File I/O:** Import and export data from various formats (see `io/` and `io/extractors/`).
+- **Processing:** Apply corrections, distortions, and operations to your data (see `processing/`).
+- **Machine Specific Tools:** Manipulate data file from specific AFMs. (see `experiments/`).
+
+All processing steps and their parameters are automatically tracked and stored in the HDF5 file, ensuring reproducibility.
+
+For detailed usage examples and API reference, please visit the [documentation](https://hystorian.readthedocs.io/en/latest/).
+
+## Contributing
+
+Feel free to open issues or pull requests to help improve Hystorian!
+
+---
