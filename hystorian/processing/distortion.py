@@ -3,8 +3,40 @@ import warnings
 import numpy as np
 from scipy import ndimage as ndi
 
+# This implementation is based on:
+# Evangelidis, G. D., & Psarakis, E. Z. (2008). Parametric Image Alignment Using Enhanced Correlation Coefficient Maximization.
+# IEEE Transactions on Pattern Analysis and Machine Intelligence, 30(10), 1858–1865.
 
 def custom_warp(im, mat, motion_type="affine", order=1):
+    """
+    Applies a geometric transformation to an image using a specified transformation matrix.
+
+    Parameters
+    ----------
+    im : ndarray
+        The input image array to be transformed.
+    mat : ndarray
+        The transformation matrix. For affine, this is typically a 2x3 or 3x3 matrix.
+        For homography, this should be a 3x3 matrix.
+    motion_type : str, optional
+        The type of transformation to apply. Supported values are "affine" and "homography".
+        Default is "affine".
+    order : int, optional
+        The order of the spline interpolation used for the transformation.
+        Default is 1 (linear interpolation).
+
+    Returns
+    -------
+    ndarray
+        The transformed (warped) image.
+
+    Notes
+    -----
+    - This function supports both affine and homography transformations.
+    - For affine transformations, it uses `scipy.ndimage.affine_transform`, which applies a linear mapping from input coordinates to output coordinates.
+    - For homography transformations, it uses `scipy.ndimage.geometric_transform` with a custom coordinate mapping function, allowing for more complex projective transformations.
+    - The function assumes the transformation matrix is correctly formatted for the chosen motion type.
+    """
     def coord_mapping(pt, mat):
         pt += (1,)
         points_unwarping = mat @ np.array(pt).T
@@ -29,26 +61,35 @@ def find_transform_ecc(
     order=1,
 ):
     """
-    Find the transformation matrix that aligns the warped image (iw) to the reference image (ir) using the Enhanced Correlation Coefficient (ECC) maximization.
+    Estimates the geometric transformation matrix that best aligns a warped image (iw) to a reference image (ir)
+    by maximizing the Enhanced Correlation Coefficient (ECC).
+
+    The function iteratively updates the transformation matrix to maximize the normalized correlation between
+    the reference and warped images. It supports several motion models, including translation, affine, euclidean,
+    and homography. Gaussian filtering is applied to both images before alignment to reduce noise and improve stability.
 
     Parameters
     ----------
     ir : ndarray
-        Reference image.
+        Reference image (target for alignment).
     iw : ndarray
         Warped image to be corrected.
     warp_matrix : ndarray, optional
-        Initial guess for the transformation matrix, should be a 3x3 ndarray. Default is None.
+        Initial guess for the transformation matrix. If None, an identity matrix is used.
+        Should be 3x3 for 2D images or 4x4 for 3D images.
+        Default is None.
     motion_type : str, optional
-        Type of transformation to find. Can be "translation", "affine", "euclidean", or "homography". Default is "affine".
+        Type of transformation: "translation", "affine", "euclidean", or "homography".
+        Default is "affine".
     number_of_iterations : int, optional
         Maximum number of iterations before the algorithm stops. Default is 200.
     termination_eps : float, optional
-        Threshold for the absolute difference between the normalized correlation of successive iterations. If the difference is less than this value, the algorithm stops. Default is -1.0 (algorithm stops only after reaching the maximum number of iterations).
+        Threshold for the absolute difference between the normalized correlation of successive iterations.
+        If the difference is less than this value, the algorithm stops. Default is -1.0 (no early stopping).
     gauss_filt_size : float, optional
-        Standard deviation of the Gaussian kernel used for blurring ir and iw. Default is 5.0.
+        Standard deviation for Gaussian kernel used to blur ir and iw before alignment. Default is 5.0.
     order : int, optional
-        Order of the interpolation used in the warp function. Default is 1.
+        Interpolation order used in the warp function. Default is 1.
 
     Returns
     -------
@@ -58,9 +99,8 @@ def find_transform_ecc(
     Raises
     ------
     ValueError
-        If rho is NaN, indicating a failure in the algorithm.
-    ValueError
-        If the algorithm stops before convergence, indicating that the images may be uncorrelated or non-overlapping.
+        - If the correlation coefficient (rho) becomes NaN, indicating a failure in the algorithm.
+        - If the algorithm stops before convergence, indicating that the images may be uncorrelated or non-overlapping.
     """
 
     if warp_matrix is None:
@@ -142,6 +182,45 @@ def find_transform_ecc(
 
 
 def compute_jacobian(grad, xy_grid, warp_matrix, motion_type="affine"):
+    """
+    Computes the Jacobian matrix of the warped image with respect to the transformation parameters.
+
+    The Jacobian describes how small changes in the transformation parameters affect the pixel intensities
+    of the warped image. Mathematically, the Jacobian is defined as the matrix of partial derivatives of the
+    warped image with respect to the parameter vector, i.e., J(x; p) = ∂w(x; p)/∂p
+    (see Evangelidis & Psarakis, 2008, IEEE TPAMI, p. 1859).
+
+    This function supports multiple motion models, including translation, affine,
+    euclidean, homography, and their 3D variants. The appropriate Jacobian computation is selected based
+    on the dimensionality of the input and the specified motion type.
+
+    Parameters
+    ----------
+    grad : ndarray
+        Gradient(s) of the warped image.
+    xy_grid : list of ndarray
+        Meshgrid coordinates corresponding to the image dimensions.
+    warp_matrix : ndarray
+        Current transformation matrix.
+    motion_type : str, optional
+        Type of transformation: "translation", "affine", "euclidean", "homography".
+        Default is "affine".
+
+    Returns
+    -------
+    ndarray
+        The computed Jacobian matrix, with shape depending on the motion model and image dimensionality.
+
+    Notes
+    -----
+    - The returned Jacobian is used in ECC optimization to update transformation parameters.
+    - For 2D images, the Jacobian shape is (num_params, H, W).
+    - For 3D images, the Jacobian shape is (num_params, D, H, W).
+    - The `grad` parameter should be a sequence (such as a list or array) containing the spatial gradients of the warped image.
+      For 2D images, this is typically [grad_x, grad_y], and for 3D images, [grad_x, grad_y, grad_z]. Each gradient array
+      should have the same shape as the warped image and represent the rate of change of pixel intensities along the respective axis.
+
+    """
     def compute_jacobian_translation(grad):
         grad_iw_x, grad_iw_y = grad
         return np.stack([grad_iw_x, grad_iw_y])
@@ -257,6 +336,31 @@ def compute_jacobian(grad, xy_grid, warp_matrix, motion_type="affine"):
 
 
 def update_warping_matrix(map_matrix, update, motion_type="affine"):
+    """
+    Updates the transformation matrix by applying the parameter increments computed during ECC optimization.
+
+    This function supports multiple motion models, including translation, affine, euclidean, homography,
+    and their 3D variants. The update is performed by adding the parameter increments to the appropriate
+    elements of the transformation matrix, according to the selected motion type.
+
+    Parameters
+    ----------
+    map_matrix : ndarray
+        The current transformation matrix to be updated. For 2D images, this is typically a 3x3 matrix.
+        For 3D images, this is typically a 4x4 matrix.
+    update : ndarray or sequence
+        The parameter increments to be applied to the transformation matrix. The length and meaning of
+        this vector depend on the motion type.
+    motion_type : str, optional
+        The type of transformation model. Supported values are "translation", "affine", "euclidean",
+        "homography", and their 3D variants. Default is "affine".
+
+    Returns
+    -------
+    ndarray
+        The updated transformation matrix.
+    """
+
     def update_warping_matrix_translation(map_matrix, update):
         map_matrix[0, 2] += update[0]
         map_matrix[1, 2] += update[1]
@@ -335,10 +439,31 @@ def update_warping_matrix(map_matrix, update, motion_type="affine"):
 
 def project_onto_jacobian(jac, mat):
     """
-    In the orignal code the matrix is stored as a 2D [K*H,W] array, and the code is looping through K, splitting the matrix into K submatrices.Then the sub-matrix and the `mat` of size HxW are flattened into vectors.
-    From there, a dot product is applied to the vectors.
-    This is equivalent to multiplying the two matrices together element-by-element, then summing the result.
-    Here we have it stored as a 3d array [K,H,W] `jac`, so we take advantage of broadcasting to not need to loop through K.
+    Projects a matrix onto the Jacobian by computing the sum of element-wise products.
+
+    This function multiplies the Jacobian array and the input matrix element-wise and then sums over all spatial axes.
+    The result is a vector where each element represents the projection of the input matrix onto one parameter direction
+    of the Jacobian.
+
+    Parameters
+    ----------
+    jac : ndarray
+        The Jacobian matrix, typically of shape (num_params, H, W) for 2D images or (num_params, D, H, W) for 3D images.
+    mat : ndarray
+        The matrix to project, typically of shape (H, W) for 2D or (D, H, W) for 3D.
+
+    Returns
+    -------
+    ndarray
+        The projection result, a vector of length num_params.
+
+    Notes
+    -----
+    - In the original code, the Jacobian was stored as a 2D [K*H, W] array, and the code looped through K, splitting the matrix into K submatrices.
+        Each submatrix and the input matrix were flattened into vectors, and a dot product was applied.
+        This is equivalent to multiplying the two matrices together element-by-element, then summing the result.
+        Here, the Jacobian is stored as a 3D array [K, H, W], so broadcasting is used to avoid explicit looping.
+        The summation is performed over all spatial axes, which generalizes to higher dimensions.
     """
     axis_summation = tuple(np.arange(1, len(np.shape(jac))))
     return np.sum(
@@ -348,14 +473,36 @@ def project_onto_jacobian(jac, mat):
 
 def compute_hessian(jac):
     """
-    the line below is equivalent to:
-    hessian = np.empty((np.shape(jac)[0], np.shape(jac)[0]))
-    for i in range(np.shape(jac)[0]):
-        hessian[i,:] = np.sum(np.multiply(jac[i,:,:], jac), axis=(1,2))
-        for j in range(i+1, np.shape(jac)[0]):
-            hessian[i,j] = np.sum(np.multiply(jac[i,:,:], jac[j,:,:]))
-            hessian[j,i] = hessian[i,j]
+    Computes the Hessian matrix from the Jacobian for ECC optimization.
+
+    The Hessian matrix quantifies the second-order partial derivatives of the cost function with respect to the transformation parameters.
+    It is constructed by summing the outer products of the Jacobian across all spatial axes, resulting in a symmetric matrix
+    that is used to update the transformation parameters during optimization.
+
+    Parameters
+    ----------
+    jac : ndarray
+        The Jacobian matrix, typically of shape (num_params, H, W) for 2D images or (num_params, D, H, W) for 3D images.
+
+    Returns
+    -------
+    ndarray
+        The Hessian matrix, of shape (num_params, num_params).
+
+    Notes
+    -----
+        The implementation uses `np.tensordot` to sum the products of the Jacobian over all spatial axes, which generalizes to higher dimensions.
+    This is equivalent to the following code::
+
+        hessian = np.empty((np.shape(jac)[0], np.shape(jac)[0]))
+        for i in range(np.shape(jac)[0]):
+            hessian[i,:] = np.sum(np.multiply(jac[i,:,:], jac), axis=(1,2))
+            for j in range(i+1, np.shape(jac)[0]):
+                hessian[i,j] = np.sum(np.multiply(jac[i,:,:], jac[j,:,:]))
+                hessian[j,i] = hessian[i,j]
+    
     """
+    
     axis_summation = tuple(np.arange(1, len(np.shape(jac))))
     hessian = np.tensordot(
         jac, jac, axes=((axis_summation, axis_summation))
