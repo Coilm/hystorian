@@ -59,7 +59,8 @@ class TestHyFileConversion:
             gsfFile.close()
 
             assert f[f"metadata/{path.stem}"].attrs["XReal"] == float(metadata["XReal"])
-
+    
+    @pytest.mark.skip(reason="The file is not available in the repository.")
     def test_extraction_ardf_sspfm(self):
         path = pathlib.Path("tests/test_files/raw_files/test_sspfm_ardf.ARDF")
         with hyFile.HyFile(filepath, "r+") as f:
@@ -81,7 +82,8 @@ class TestHyFileConversion:
         }
 
         # assert pytest.approx(value) == 757608337.0
-
+        
+    @pytest.mark.skip(reason="The file is not available in the repository.")
     def test_extraction_ardf_fmap(self):
         path = pathlib.Path("tests/test_files/raw_files/test_fmap_ardf.ARDF")
         with hyFile.HyFile(filepath, "r+") as f:
