@@ -6,7 +6,7 @@ authors = [
     { name = "Loic Musy", email = "loic.musy@unige.ch" },
     { name = "Ralph Bulanadi", email = "ralph.bulanadi@unige.ch" },
 ]
-requires-python = "~=3.13"
+requires-python = ">=3.10"
 readme = "README.md"
 dependencies = [
     "h5py>=3.12.0,<4",
@@ -15,7 +15,6 @@ dependencies = [
     "igor2>=0.5.9,<0.6",
     "scikit-image>=0.25.0,<0.26",
     "chardet>=5.2.0,<6",
-    "pywin32>=308,<309",
     "pyzmq>=26.2.0,<27",
 ]
 
