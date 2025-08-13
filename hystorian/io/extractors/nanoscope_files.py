@@ -1,6 +1,5 @@
 from pathlib import Path
 
-import h5py
 import numpy as np
 
 from ..utils import HyConvertedData, conversion_metadata, is_number

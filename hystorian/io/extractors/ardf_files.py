@@ -1,5 +1,4 @@
 import gc
-import struct
 from pathlib import Path
 
 import chardet

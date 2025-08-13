@@ -1,7 +1,5 @@
 from pathlib import Path
-from typing import Any
 
-import h5py
 import numpy as np
 from igor2 import binarywave
 
