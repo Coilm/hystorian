@@ -3,7 +3,7 @@ import scipy.ndimage as ndi
 
 from skimage.color import rgb2gray
 from skimage.data import astronaut, cells3d
-from hystorian.processing.distortion import custom_warp, find_transform_ecc
+from hystorian.processing.distortion import custom_warp, find_transform
 from skimage.transform import AffineTransform
 
 # Taken from PR #7421, to be replace once it is merged.
@@ -39,7 +39,7 @@ def test_find_transform_ecc_translation():
     ir = rgb2gray(astronaut())[::2, ::2]
     forward = AffineTransform(translation=(15, -20))
     iw = ndi.affine_transform(ir, forward, order=1)
-    mat = find_transform_ecc(ir, iw, motion_type='translation', termination_eps=1e-12)
+    mat = find_transform(ir, iw, method='ECC', motion_type='translation', termination_eps=1e-12)
     tre = target_registration_error(ir.shape, mat @ forward)
     assert (
         tre.max() < max_error
@@ -50,7 +50,7 @@ def test_find_transform_ecc_euclidean():
     ir = rgb2gray(astronaut())[::2, ::2]
     forward = AffineTransform(rotation=0.15)
     iw = ndi.affine_transform(ir, forward, order=1)
-    mat = find_transform_ecc(ir, iw, motion_type='euclidean', termination_eps=1e-12)
+    mat = find_transform(ir, iw, method='ECC', motion_type='euclidean', termination_eps=1e-12)
     tre = target_registration_error(ir.shape, mat @ forward)
     assert (
         tre.max() < max_error
@@ -61,7 +61,7 @@ def test_find_transform_ecc_affine():
     ir = rgb2gray(astronaut())[::2, ::2]
     forward = AffineTransform(translation=(15, -20), rotation=0.15, shear=0.15)
     iw = ndi.affine_transform(ir, forward, order=1)
-    mat = find_transform_ecc(ir, iw, motion_type='affine', termination_eps=1e-12)
+    mat = find_transform(ir, iw, method='ECC', motion_type='affine', termination_eps=1e-12)
     tre = target_registration_error(ir.shape, mat @ forward)
     assert (
         tre.max()
@@ -77,7 +77,7 @@ def test_find_transform_ecc_homography():
     forward = AffineTransform(translation=(10, -15), rotation=0.14, shear=0.01).params
     forward[2, 0] = 1e-3
     iw = custom_warp(ir, forward, motion_type='homography')
-    mat = find_transform_ecc(ir, iw, motion_type='homography', termination_eps=1e-12)
+    mat = find_transform(ir, iw, method='ECC', motion_type='homography', termination_eps=1e-12)
     tre = target_registration_error(ir.shape, mat @ forward)
     assert (
         tre.max()
@@ -94,7 +94,7 @@ def test_find_transform_ecc_translation_3D():
     forward[1, 3] = 7
     forward[2, 3] = -5
     iw = ndi.affine_transform(ir, forward, order=1)
-    mat = find_transform_ecc(ir, iw, motion_type='translation', termination_eps=1e-6)
+    mat = find_transform(ir, iw, method='ECC', motion_type='translation', termination_eps=1e-6)
     tre = target_registration_error(ir.shape, mat @ forward)
     assert (
         tre.max()

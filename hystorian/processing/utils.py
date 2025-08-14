@@ -1,3 +1,4 @@
+import numpy as np
 def dict_to_list(d, join_str="/", parent_key=""):
     if isinstance(d, dict):
         items = []
@@ -7,3 +8,10 @@ def dict_to_list(d, join_str="/", parent_key=""):
         return items
     else:
         return [parent_key]
+
+def normalize(data, log=False):
+        data -= np.min(data)
+        data /= np.max(data)
+        if log:
+            data = np.log(data + 1e-12)
+        return data
