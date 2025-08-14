@@ -11,7 +11,7 @@ def find_transform(ir, iw, method='ECC', **kwargs):
     elif method == 'ORB':
         return find_transform_ORB(ir, iw, **kwargs)
     else:
-        raise ValueError(f"Method {method} is not supported. Use 'ECC'.")
+        raise ValueError(f"Method {method} is not supported. Use 'ECC' or 'ORB'.")
 
 def get_polynomial_terms(X, Y, degree):
     terms = []
