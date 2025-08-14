@@ -29,6 +29,7 @@ dev = [
     "sphinx~=8.1",
     "sphinx-rtd-theme>=3.0.2,<4",
     "ipykernel>=6.23.0,<7",
+    "pooch>=1.8.2",
 ]
 
 [build-system]
