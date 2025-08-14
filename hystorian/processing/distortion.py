@@ -21,16 +21,12 @@ def get_polynomial_terms(X, Y, degree):
             terms.append((X ** j) * (Y ** i))
     return np.stack(terms, axis=1)
 
-def find_transform_ORB(ir, iw, order=2, random_seed=None):
+def find_transform_ORB(ir, iw, order=1, random_seed=None):
     if random_seed:
         np.random.seed(random_seed)
 
-    ir = ir-np.min(ir)
-    iw = iw-np.min(iw)
-    ir = ir/np.max(ir)
-    iw = iw/np.max(iw)
-    ir = np.log(ir+1e-12)
-    iw = np.log(iw+1e-12)
+    ir = normalize(ir, log=True)
+    iw = normalize(iw, log=True)
 
     descriptor_extractor = skimage.feature.ORB(harris_k=0)
 
@@ -49,38 +45,28 @@ def find_transform_ORB(ir, iw, order=2, random_seed=None):
 
     ######################################################
     # estimate affine transform model using all coordinates
-    #model = PiecewiseAffineTransform()
-    #model.estimate(src, dst)
 
     # robustly estimate affine transform model with RANSAC
     _, inliers = skimage.measure.ransac((src, dst), skimage.transform.AffineTransform, min_samples=3,
                                     residual_threshold=25, max_trials=30000)
 
-
-
     inlier_idxs = np.nonzero(inliers)[0]
 
-    ##########################################
-    # estimate affine transform model using all coordinates
-    model_final = skimage.transform.PolynomialTransform()
-    model_final.estimate(src[inlier_idxs], dst[inlier_idxs], order=2)
-
-    ###########################################
     X = src[inlier_idxs][:,0]
     Y = src[inlier_idxs][:,1]
     Z1 = dst[inlier_idxs][:,0]
     Z2 = dst[inlier_idxs][:,1]
 
-    A = get_polynomial_terms(X, Y, order) # np.array([X*0+1, X, Y, X**2, X*Y, Y**2]).T#, X**2, X**2*Y, X**2*Y**2, Y**2, X*Y**2, X*Y]).T
+    A = get_polynomial_terms(X, Y, order)
     
     coeff1, _, _, _ = np.linalg.lstsq(A, Z1)
     coeff2, _, _, _ = np.linalg.lstsq(A, Z2)
 
-
+    model_final = skimage.transform.PolynomialTransform()
     model_final.params = np.vstack((coeff2, coeff1))
     return model_final
 
-# This implementation is based on:
+# The following implementation is based on:
 # Evangelidis, G. D., & Psarakis, E. Z. (2008). Parametric Image Alignment Using Enhanced Correlation Coefficient Maximization.
 # IEEE Transactions on Pattern Analysis and Machine Intelligence, 30(10), 1858–1865.
 
