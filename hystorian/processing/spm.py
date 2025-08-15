@@ -1,5 +1,7 @@
 import numpy as np
 import numpy.typing as npt
+from scipy.signal import find_peaks
+
 from .operation import gauss_area
 
 
@@ -183,7 +185,20 @@ def clean_loop(bias, phase, amp, threshold=None):
     return good_bias, good_phase, good_amp, mask
 
 
-def get_phase_unwrapping_shift(phase, phase_step=1):
+def get_phase_unwrapping_shift(phase: npt.NDArray, phase_step: int = 1) -> int:
+    phase_step = 90
+    jumps = []
+    for shift in range(0, 360, phase_step):
+        y = (phase + shift) % 360
+        # what is the biggest phase jump?
+        max_phase_jump = np.max(np.abs(np.diff(y)))
+        jumps.append(max_phase_jump)
+
+    opt_shift = phase_step * np.argmin(np.array(jumps))
+    return opt_shift
+
+
+def shift_and_wrap_phase(phase: npt.NDArray, phase_step: int = 1) -> npt.NDArray:
     """
     Finds the smallest shift that minimizes the phase jump in a phase series
 
@@ -194,14 +209,28 @@ def get_phase_unwrapping_shift(phase, phase_step=1):
 
     Returns
     -------
-    The phase shift. (phase + shift) % 360 will have the smallest jumps between consecutive phase points.
+    The phase image shifted such that there is the smallest jumps between consecutive phase points.
     """
-    phase_step = 90
-    jumps = []
-    for shift in range(0, 360, phase_step):
-        y = (phase + shift) % 360
-        # what is the biggest phase jump?
-        max_phase_jump = np.max(np.abs(np.diff(y)))
-        jumps.append(max_phase_jump)
+    opt_shift = get_phase_unwrapping_shift(phase, phase_step)
+    return (phase + opt_shift) % 360
 
-    return phase_step * np.argmin(np.array(jumps))
+
+def binarize_phase(phase: npt.NDArray) -> npt.NDArray:
+    phase = shift_and_wrap_phase(phase)
+
+    # Step 1: Find histogram peaks
+    values = phase.ravel()
+    counts, bin_edges = np.histogram(values, bins=720)  # small bin width for precision
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+
+    peaks, props = find_peaks(counts, height=0)
+    sorted_peaks = peaks[np.argsort(props["peak_heights"])[::-1]]
+    top2_peaks = bin_centers[sorted_peaks[:2]]
+
+    # Step 2: Sort peaks so first is smaller
+    top2_peaks = np.sort(top2_peaks)
+
+    # Step 3: Compute midpoint between peaks (circular aware)
+    peak_midpoint = np.mean(top2_peaks)
+
+    return np.where(phase < peak_midpoint, 0, 1)  # Binarize based on midpoint
