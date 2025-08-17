@@ -500,8 +500,10 @@ class HyFile:
                     del f[key]
                 else:
                     raise KeyError("Key already exist and overwriste is set to False.")
-
-            f.create_dataset(key, data=data)
+                
+            # Uses create_dataset and NOT _create_dataset (which would be recursive).
+            # The former is the h5py method to create datasets.
+            f.create_dataset(key, data=data) 
 
     def _generate_deep_groups(self, deep_dict: dict[str, dict], f: Optional[h5pyType] = None):
         """_generate_deep_groups
