@@ -185,8 +185,25 @@ def clean_loop(bias, phase, amp, threshold=None):
     return good_bias, good_phase, good_amp, mask
 
 
-def get_phase_unwrapping_shift(phase: npt.NDArray, phase_step: int = 1) -> int:
-    phase_step = 90
+def _get_phase_unwrapping_shift(phase: npt.NDArray, phase_step: float = 1) -> float:
+    """
+    Calculate the optimal phase unwrapping shift to minimize phase jumps.
+
+    Parameters
+    ----------
+    phase : npt.NDArray
+        array containing the phase values
+    phase_step : int, optional
+        step size for phase wrapping (default: 1)
+        This parameter controls how finely we search for the optimal phase shift.
+        A smaller value will result in a more precise search but may also increase computation time.
+
+    Returns
+    -------
+    int
+        Optimal phase unwrapping shift
+    """
+    
     jumps = []
     for shift in range(0, 360, phase_step):
         y = (phase + shift) % 360
@@ -211,11 +228,24 @@ def shift_and_wrap_phase(phase: npt.NDArray, phase_step: int = 1) -> npt.NDArray
     -------
     The phase image shifted such that there is the smallest jumps between consecutive phase points.
     """
-    opt_shift = get_phase_unwrapping_shift(phase, phase_step)
+    opt_shift = _get_phase_unwrapping_shift(phase, phase_step)
     return (phase + opt_shift) % 360
 
 
 def binarize_phase(phase: npt.NDArray) -> npt.NDArray:
+    """
+    Binarize a phase image by finding the midpoint between two largest peaks in the histogram of phases.
+
+    Parameters
+    ----------
+    phase : npt.NDArray
+        Phase image to binarize
+
+    Returns
+    -------
+    npt.NDArray
+        Binarized phase image, where values below the midpoint are 0 and above are 1
+    """
     phase = shift_and_wrap_phase(phase)
 
     # Step 1: Find histogram peaks
