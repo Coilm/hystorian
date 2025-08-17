@@ -25,7 +25,7 @@ class TestApply:
     def test_apply_HyPath(self):
         path = pathlib.Path("tests/test_files/raw_files/test_nanonis.000")
         with hyFile.HyFile(filepath, "r+") as f:
-            f.extract_data(path, ignore_if_exist=False)
+            f.extract_data(path, overwrite=False)
 
             f.apply(np.nansum, hyFile.HyPath("datasets/test_nanonis/HeightRetrace"), output_names=["test1"])
             f.apply(np.nansum, hyFile.HyPath("datasets/test_nanonis/HeightRetrace"), output_names=["test1"], axis=0)
@@ -45,7 +45,7 @@ class TestApply:
     def test_apply_default_output_names(self):
         path = pathlib.Path("tests/test_files/raw_files/test_nanonis.000")
         with hyFile.HyFile(filepath, "r+") as f:
-            f.extract_data(path, ignore_if_exist=False)
+            f.extract_data(path, overwrite=False)
 
             f.apply(np.nansum, hyFile.HyPath("datasets/test_nanonis/HeightRetrace"))
 
@@ -56,7 +56,7 @@ class TestApply:
     def test_multiple_apply(self):
         path = pathlib.Path("tests/test_files/raw_files/test_nanonis.000")
         with hyFile.HyFile(filepath, "r+") as f:
-            f.extract_data(path, ignore_if_exist=False)
+            f.extract_data(path, overwrite=False)
             f.multiple_apply(
                 np.nansum,
                 [
@@ -73,7 +73,7 @@ class TestApply:
     def test_multiple_apply_default_output_names(self):
         path = pathlib.Path("tests/test_files/raw_files/test_nanonis.000")
         with hyFile.HyFile(filepath, "r+") as f:
-            f.extract_data(path, ignore_if_exist=False)
+            f.extract_data(path, overwrite=False)
             f.multiple_apply(
                 np.nansum,
                 [

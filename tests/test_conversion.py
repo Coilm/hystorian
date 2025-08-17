@@ -21,7 +21,7 @@ class TestHyFileConversion:
     def test_extraction_ibw(self):
         path = pathlib.Path("tests/test_files/raw_files/test_ibw.ibw")
         with hyFile.HyFile(filepath, "r+") as f:
-            f.extract_data(path, ignore_if_exist=False)
+            f.extract_data(path, overwrite=False)
 
             tmpdata = binarywave.load(path)["wave"]
             metadata = {}
@@ -36,7 +36,7 @@ class TestHyFileConversion:
     def test_extraction_gsf(self):
         path = pathlib.Path("tests/test_files/raw_files/test_gsf.gsf")
         with hyFile.HyFile(filepath, "r+") as f:
-            f.extract_data(path, ignore_if_exist=False)
+            f.extract_data(path, overwrite=False)
 
             gsfFile = open(path, "rb")  # + ".gsf", "rb")
 
@@ -87,7 +87,7 @@ class TestHyFileConversion:
     def test_extraction_ardf_fmap(self):
         path = pathlib.Path("tests/test_files/raw_files/test_fmap_ardf.ARDF")
         with hyFile.HyFile(filepath, "r+") as f:
-            f.extract_data(path, ignore_if_exist=False)
+            f.extract_data(path, overwrite=False)
             channels = set(f.read("datasets/test_fmap_ardf/"))
             value = f.read("datasets/test_fmap_ardf/Bias/trace")[0][0][0]
 
@@ -97,7 +97,7 @@ class TestHyFileConversion:
     def test_nanonis(self):
         path = pathlib.Path("tests/test_files/raw_files/test_nanonis.000")
         with hyFile.HyFile(filepath, "r+") as f:
-            f.extract_data(path, ignore_if_exist=False)
+            f.extract_data(path, overwrite=False)
             channels = set(f.read("datasets/test_nanonis"))
             value = f.read("datasets/test_nanonis/HeightRetrace")[0][0]
 

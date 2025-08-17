@@ -382,7 +382,7 @@ class HyFile:
         for k, v in attr_dict.items():
             self.attrs[path] = (k, v)
 
-    def extract_data(self, path: str | Path, ignore_if_exist=True, **kwargs) -> None:
+    def extract_data(self, path: str | Path, overwrite=False, **kwargs) -> None:
         """Extract the data, metadata and attributes from a file given by path.
         Currently supported files are:
 
@@ -404,15 +404,9 @@ class HyFile:
         if isinstance(path, str):
             path = Path(path)
 
-        if ignore_if_exist and Path.exists(path):
-            warnings.warn(
-                f"File {path} already exists, ignoring it. If you want to overwrite it, set ignore_if_exist=False."
-            )
-            return
-
         extracted = HyExtractor.extract(path, **kwargs)
 
-        self._write_extracted_data(path, extracted)
+        self._write_extracted_data(path, extracted, overwrite=overwrite)
 
     def path_search(self, criterion: str | list[str] = ".*") -> list[HyPath]:
         if not isinstance(criterion, list):
@@ -532,11 +526,11 @@ class HyFile:
                 if key != "":
                     f.attrs[key] = val
 
-    def _write_extracted_data(self, path: Path, extracted_values: HyConvertedData) -> None:
+    def _write_extracted_data(self, path: Path, extracted_values: HyConvertedData, overwrite: bool = False) -> None:
         self._require_group(f"datasets/{path.stem}")
         self._generate_deep_groups(extracted_values.data, self.file[f"datasets/{path.stem}"])
 
-        self._create_dataset((path.stem, str(extracted_values.metadata)), self.file["metadata"])
+        self._create_dataset((path.stem, str(extracted_values.metadata)), self.file["metadata"], overwrite=overwrite)
 
         self._generate_deep_attributes(extracted_values.metadata, self.file[f"metadata/{path.stem}"])
         self._generate_deep_attributes(extracted_values.attributes, self.file[f"datasets/{path.stem}"])
