@@ -76,7 +76,7 @@ def _calc_hyst_params(bias: npt.NDArray, phase: npt.NDArray) -> list[npt.NDArray
     biasdiff = np.diff(bias)
     up = np.sort(np.unique(np.hstack((np.where(biasdiff > 0)[0], np.where(biasdiff > 0)[0] + 1))))
     dn = np.sort(np.unique(np.hstack((np.where(biasdiff < 0)[0], np.where(biasdiff < 0)[0] + 1))))
-    phase_shift = get_phase_unwrapping_shift(phase)
+    phase_shift = _get_phase_unwrapping_shift(phase)
 
     # UP leg calculations
     if up.size == 0:
