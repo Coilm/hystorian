@@ -5,7 +5,7 @@ import warnings
 from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, KeysView, Optional, overload
+from typing import Any, Callable, KeysView, Optional
 
 import h5py
 import numpy as np
