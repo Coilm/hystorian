@@ -323,6 +323,21 @@ class HyFile:
             self.apply(function, args, increment_proc=increment_proc, output_names=output, **kwargs)
             increment_proc = False
 
+    def merge(self, tomerge, overwrite: bool = False) -> None:
+        if isinstance(tomerge, Path) or isinstance(tomerge, str):
+            tomerge = [tomerge]
+
+        for file in tomerge:
+            if file == self.path:
+                raise ValueError("Cannot merge a file with itself.")
+
+            with HyFile(file, "r") as f:
+                for path in f.path_search():
+                    f.read(path)
+                    self._create_dataset((path.path, f.read(path)), overwrite=overwrite)
+                    for k, v in f.attrs[path.path].items():
+                        self.attrs[path.path] = k, v
+
     def _generate_process_folder_name(self, num_proc: int, function: Callable) -> str:
         return f"{str(num_proc).zfill(3)}-{function.__name__}"
 
