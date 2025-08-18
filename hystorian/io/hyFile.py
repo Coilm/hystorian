@@ -24,6 +24,10 @@ class HyPath:
     @property
     def path(self):
         return self._path
+    
+    @property
+    def stem(self):
+        return self._path.split("/")[-1]
 
     def __str__(self):
         return self._path
