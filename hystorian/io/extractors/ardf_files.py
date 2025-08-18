@@ -168,7 +168,7 @@ def extractImages(fid, F, noteMain):
     D["y"] = []
 
     for n in range(F["numbImag"]):
-        imagN = f"imag{n+1}"
+        imagN = f"imag{n + 1}"
 
         F[imagN] = local_readTOC(fid, F["ftoc"]["pntImag"][n], "IMAG")
 
@@ -370,7 +370,7 @@ def local_readARDFpointer(fid, address):
 
 def local_checkType(found, test, fid):
     if found != test:
-        raise ValueError(f"Error: No '{test}' here! Found: '{found}' at Location: {fid.tell()-16}")
+        raise ValueError(f"Error: No '{test}' here! Found: '{found}' at Location: {fid.tell() - 16}")
 
 
 # ==================
@@ -471,7 +471,7 @@ def local_readXDAT(fid, address):
         fid.seek(-16, 1)
 
     else:
-        raise ValueError(f"Error: No 'XDAT' or 'VSET' here! Found: '{lastType}' at Location: {fid.tell()-16}")
+        raise ValueError(f"Error: No 'XDAT' or 'VSET' here! Found: '{lastType}' at Location: {fid.tell() - 16}")
 
 
 def local_readVNAM(fid, address):

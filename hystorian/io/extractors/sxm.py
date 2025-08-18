@@ -22,17 +22,17 @@ def extract(filename: Path) -> HyConvertedData:
         The extra saved attributes are: the scale (in m/px), the image offset and the units of each channel.
     """
 
-    d = open(filename, 'rb')
-    
+    d = open(filename, "rb")
+
     metadata = {}
     currkey = ""
     hdrend = 0
     while hdrend == 0:
-        line = d.readline().strip().decode('ISO-8859-1')
+        line = d.readline().strip().decode("ISO-8859-1")
         if line == ":SCANIT_END:":
             hdrend = 1
             continue
-        if (line.startswith(':')):
+        if line.startswith(":"):
             currkey = line
             metadata[currkey] = []
         else:
@@ -46,7 +46,7 @@ def extract(filename: Path) -> HyConvertedData:
     chans = []
     for c in clist[1:]:
         ca = c.split("\t")
-        if ca[3] == 'both':
+        if ca[3] == "both":
             chans.append([ca[1] + " forward", ca[2], ca[4], ca[5]])
             chans.append([ca[1] + " backward", ca[2], ca[4], ca[5]])
         else:
@@ -64,19 +64,22 @@ def extract(filename: Path) -> HyConvertedData:
     scandir = metadata[":SCAN_DIR:"]
 
     for i in range(len(chans)):
-        cdata = np.reshape(np.frombuffer(dataraw[i*4*xsizepx*ysizepx:(i+1)*4*xsizepx*ysizepx], dtype='>f4'),(xsizepx, ysizepx))
-        if scandir == 'up':
+        cdata = np.reshape(
+            np.frombuffer(dataraw[i * 4 * xsizepx * ysizepx : (i + 1) * 4 * xsizepx * ysizepx], dtype=">f4"),
+            (xsizepx, ysizepx),
+        )
+        if scandir == "up":
             cdata = np.flipud(cdata)
-        if (chans[i][0].endswith(" backward")):
+        if chans[i][0].endswith(" backward"):
             cdata = np.fliplr(cdata)
         data[chans[i][0]] = np.copy(cdata)
         attributes[chans[i][0]] = {}
 
-        attributes[chans[i][0]]["shape"] = (xsizepx,ysizepx)
-        attributes[chans[i][0]]["scale_m_per_px"] = xsizem/xsizepx
+        attributes[chans[i][0]]["shape"] = (xsizepx, ysizepx)
+        attributes[chans[i][0]]["scale_m_per_px"] = xsizem / xsizepx
         attributes[chans[i][0]]["name"] = chans[i][0]
         attributes[chans[i][0]]["size"] = (xsizem, ysizem)
         attributes[chans[i][0]]["offset"] = (xoffset, yoffset)
-        attributes[chans[i][0]]["unit"] = ("m","m",chans[i][1])
+        attributes[chans[i][0]]["unit"] = ("m", "m", chans[i][1])
     converted = HyConvertedData(data, metadata, attributes)
     return converted

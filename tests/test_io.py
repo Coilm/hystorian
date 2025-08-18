@@ -89,5 +89,6 @@ class TestHyFileWrite(unittest.TestCase):
             assert f[f"datasets/{fake_path}/b"].attrs["size"] == 200
             assert (f[f"datasets/{fake_path}/b"] == np.arange(200)).all()
 
+
 if __name__ == "__main__":
     unittest.main()

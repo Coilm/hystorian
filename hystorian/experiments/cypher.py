@@ -7,7 +7,7 @@ def extract_hysteresis(
     len_bias: int,
     waveform_pulsetime: int,
     waveform_dutycycle: float = 0.5,
-    num_pts_per_sec: float
+    num_pts_per_sec: float,
 ) -> tuple[npt.NDArray]:
     """extract_hist split data from an SSPFM measurement into part where the bias is off, and the bias is on.
     Therefore it can be used to build P-E loop.

@@ -5,21 +5,24 @@ import skimage
 from scipy import ndimage as ndi
 from .utils import normalize
 
-def find_transform(ir, iw, method='ECC', **kwargs):
-    if method == 'ECC':
+
+def find_transform(ir, iw, method="ECC", **kwargs):
+    if method == "ECC":
         return find_transform_ecc(ir, iw, **kwargs)
-    elif method == 'ORB':
+    elif method == "ORB":
         return find_transform_ORB(ir, iw, **kwargs)
     else:
         raise ValueError(f"Method {method} is not supported. Use 'ECC' or 'ORB'.")
+
 
 def get_polynomial_terms(X, Y, degree):
     terms = []
     for total_deg in range(degree + 1):
         for i in range(total_deg + 1):
             j = total_deg - i
-            terms.append((X ** j) * (Y ** i))
+            terms.append((X**j) * (Y**i))
     return np.stack(terms, axis=1)
+
 
 def find_transform_ORB(ir, iw, order=1, random_seed=None):
     if random_seed:
@@ -40,25 +43,26 @@ def find_transform_ORB(ir, iw, order=1, random_seed=None):
 
     matches12 = skimage.feature.match_descriptors(descriptors1, descriptors2, cross_check=True)
 
-    src = keypoints1[matches12[:,0]]
-    dst = keypoints2[matches12[:,1]]
+    src = keypoints1[matches12[:, 0]]
+    dst = keypoints2[matches12[:, 1]]
 
     ######################################################
     # estimate affine transform model using all coordinates
 
     # robustly estimate affine transform model with RANSAC
-    _, inliers = skimage.measure.ransac((src, dst), skimage.transform.AffineTransform, min_samples=3,
-                                    residual_threshold=25, max_trials=30000)
+    _, inliers = skimage.measure.ransac(
+        (src, dst), skimage.transform.AffineTransform, min_samples=3, residual_threshold=25, max_trials=30000
+    )
 
     inlier_idxs = np.nonzero(inliers)[0]
 
-    X = src[inlier_idxs][:,0]
-    Y = src[inlier_idxs][:,1]
-    Z1 = dst[inlier_idxs][:,0]
-    Z2 = dst[inlier_idxs][:,1]
+    X = src[inlier_idxs][:, 0]
+    Y = src[inlier_idxs][:, 1]
+    Z1 = dst[inlier_idxs][:, 0]
+    Z2 = dst[inlier_idxs][:, 1]
 
     A = get_polynomial_terms(X, Y, order)
-    
+
     coeff1, _, _, _ = np.linalg.lstsq(A, Z1)
     coeff2, _, _, _ = np.linalg.lstsq(A, Z2)
 
@@ -66,9 +70,11 @@ def find_transform_ORB(ir, iw, order=1, random_seed=None):
     model_final.params = np.vstack((coeff2, coeff1))
     return model_final
 
+
 # The following implementation is based on:
 # Evangelidis, G. D., & Psarakis, E. Z. (2008). Parametric Image Alignment Using Enhanced Correlation Coefficient Maximization.
 # IEEE Transactions on Pattern Analysis and Machine Intelligence, 30(10), 1858–1865.
+
 
 def custom_warp(im, mat, motion_type="affine", order=1):
     """
@@ -100,15 +106,14 @@ def custom_warp(im, mat, motion_type="affine", order=1):
     - For homography transformations, it uses `scipy.ndimage.geometric_transform` with a custom coordinate mapping function, allowing for more complex projective transformations.
     - The function assumes the transformation matrix is correctly formatted for the chosen motion type.
     """
+
     def coord_mapping(pt, mat):
         pt += (1,)
         points_unwarping = mat @ np.array(pt).T
         return tuple(points_unwarping)
 
-    if motion_type == 'homography':
-        return ndi.geometric_transform(
-            im, coord_mapping, order=order, extra_arguments=(mat,)
-        )
+    if motion_type == "homography":
+        return ndi.geometric_transform(im, coord_mapping, order=order, extra_arguments=(mat,))
     else:
         return ndi.affine_transform(im, mat, order=order)
 
@@ -172,7 +177,7 @@ def find_transform_ecc(
         else:
             warp_matrix = np.eye(4)
 
-    mesh = np.meshgrid(*[np.arange(0, x) for x in ir.shape], indexing='ij')
+    mesh = np.meshgrid(*[np.arange(0, x) for x in ir.shape], indexing="ij")
     mesh = [x.astype(np.float32) for x in mesh]
 
     ir = ndi.gaussian_filter(ir, gauss_filt_size)
@@ -199,12 +204,7 @@ def find_transform_ecc(
         iw_norm = np.sqrt(np.sum(iw_warped != 0) * iw_std**2)
 
         iw_warped_meancorr = iw_warped - iw_mean
-        grad_iw_warped = np.array(
-            [
-                custom_warp(g, warp_matrix, motion_type=motion_type, order=order)
-                for g in grad
-            ]
-        )
+        grad_iw_warped = np.array([custom_warp(g, warp_matrix, motion_type=motion_type, order=order) for g in grad])
 
         jacobian = compute_jacobian(grad_iw_warped, mesh, warp_matrix, motion_type)
         hessian = compute_hessian(jacobian)
@@ -284,6 +284,7 @@ def compute_jacobian(grad, xy_grid, warp_matrix, motion_type="affine"):
       should have the same shape as the warped image and represent the rate of change of pixel intensities along the respective axis.
 
     """
+
     def compute_jacobian_translation(grad):
         grad_iw_x, grad_iw_y = grad
         return np.stack([grad_iw_x, grad_iw_y])
@@ -529,9 +530,7 @@ def project_onto_jacobian(jac, mat):
         The summation is performed over all spatial axes, which generalizes to higher dimensions.
     """
     axis_summation = tuple(np.arange(1, len(np.shape(jac))))
-    return np.sum(
-        np.multiply(jac, mat), axis=axis_summation
-    )  # axis=(1, 2)) if 2D, axis=(1, 2, 3)) if 3D
+    return np.sum(np.multiply(jac, mat), axis=axis_summation)  # axis=(1, 2)) if 2D, axis=(1, 2, 3)) if 3D
 
 
 def compute_hessian(jac):
@@ -563,12 +562,10 @@ def compute_hessian(jac):
             for j in range(i+1, np.shape(jac)[0]):
                 hessian[i,j] = np.sum(np.multiply(jac[i,:,:], jac[j,:,:]))
                 hessian[j,i] = hessian[i,j]
-    
+
     """
-    
+
     axis_summation = tuple(np.arange(1, len(np.shape(jac))))
-    hessian = np.tensordot(
-        jac, jac, axes=((axis_summation, axis_summation))
-    )  # axes=([1, 2], [1, 2])) if 2D
+    hessian = np.tensordot(jac, jac, axes=((axis_summation, axis_summation)))  # axes=([1, 2], [1, 2])) if 2D
     # axes=([1, 2, 3], [1, 2, 3]) if 3D
     return hessian

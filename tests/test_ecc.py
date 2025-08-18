@@ -39,34 +39,28 @@ def test_find_transform_ecc_translation():
     ir = rgb2gray(astronaut())[::2, ::2]
     forward = AffineTransform(translation=(15, -20))
     iw = ndi.affine_transform(ir, forward, order=1)
-    mat = find_transform(ir, iw, method='ECC', motion_type='translation', termination_eps=1e-12)
+    mat = find_transform(ir, iw, method="ECC", motion_type="translation", termination_eps=1e-12)
     tre = target_registration_error(ir.shape, mat @ forward)
-    assert (
-        tre.max() < max_error
-    ), f"TRE ({tre.max():.2f}) is more than {max_error} pixels."
+    assert tre.max() < max_error, f"TRE ({tre.max():.2f}) is more than {max_error} pixels."
 
 
 def test_find_transform_ecc_euclidean():
     ir = rgb2gray(astronaut())[::2, ::2]
     forward = AffineTransform(rotation=0.15)
     iw = ndi.affine_transform(ir, forward, order=1)
-    mat = find_transform(ir, iw, method='ECC', motion_type='euclidean', termination_eps=1e-12)
+    mat = find_transform(ir, iw, method="ECC", motion_type="euclidean", termination_eps=1e-12)
     tre = target_registration_error(ir.shape, mat @ forward)
-    assert (
-        tre.max() < max_error
-    ), f"TRE ({tre.max():.2f}) is more than {max_error} pixels."
+    assert tre.max() < max_error, f"TRE ({tre.max():.2f}) is more than {max_error} pixels."
 
 
 def test_find_transform_ecc_affine():
     ir = rgb2gray(astronaut())[::2, ::2]
     forward = AffineTransform(translation=(15, -20), rotation=0.15, shear=0.15)
     iw = ndi.affine_transform(ir, forward, order=1)
-    mat = find_transform(ir, iw, method='ECC', motion_type='affine', termination_eps=1e-12)
+    mat = find_transform(ir, iw, method="ECC", motion_type="affine", termination_eps=1e-12)
     tre = target_registration_error(ir.shape, mat @ forward)
     assert (
-        tre.max()
-        < 2
-        * max_error  # Correction appears to be a bit less precise with an homography
+        tre.max() < 2 * max_error  # Correction appears to be a bit less precise with an homography
         # Probably also due to the ir is downsampled by 4 for speed reasons.
     ), f"TRE ({tre.max():.2f}) is more than {2 * max_error} pixels."
 
@@ -76,13 +70,11 @@ def test_find_transform_ecc_homography():
     ir = rgb2gray(astronaut())[::4, ::4]
     forward = AffineTransform(translation=(10, -15), rotation=0.14, shear=0.01).params
     forward[2, 0] = 1e-3
-    iw = custom_warp(ir, forward, motion_type='homography')
-    mat = find_transform(ir, iw, method='ECC', motion_type='homography', termination_eps=1e-12)
+    iw = custom_warp(ir, forward, motion_type="homography")
+    mat = find_transform(ir, iw, method="ECC", motion_type="homography", termination_eps=1e-12)
     tre = target_registration_error(ir.shape, mat @ forward)
     assert (
-        tre.max()
-        < 2
-        * max_error  # Correction appears to be a bit less precise with an homography
+        tre.max() < 2 * max_error  # Correction appears to be a bit less precise with an homography
         # Probably also due to the ir is downsampled by 4 for speed reasons.
     ), f"TRE ({tre.max():.2f}) is more than {2 * max_error} pixels."
 
@@ -94,10 +86,9 @@ def test_find_transform_ecc_translation_3D():
     forward[1, 3] = 7
     forward[2, 3] = -5
     iw = ndi.affine_transform(ir, forward, order=1)
-    mat = find_transform(ir, iw, method='ECC', motion_type='translation', termination_eps=1e-6)
+    mat = find_transform(ir, iw, method="ECC", motion_type="translation", termination_eps=1e-6)
     tre = target_registration_error(ir.shape, mat @ forward)
     assert (
-        tre.max()
-        < max_error  # Correction appears to be a bit less precise with an homography
+        tre.max() < max_error  # Correction appears to be a bit less precise with an homography
         # Probably also due to the ir is downsampled by 4 for speed reasons.
     ), f"TRE ({tre.max():.2f}) is more than {max_error} pixels."

@@ -38,3 +38,6 @@ build-backend = "hatchling.build"
 
 [tool.pylint.format]
 max-line-length = 120
+
+[tool.ruff]
+line-length = 120

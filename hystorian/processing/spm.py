@@ -203,7 +203,7 @@ def _get_phase_unwrapping_shift(phase: npt.NDArray, phase_step: float = 1) -> fl
     int
         Optimal phase unwrapping shift
     """
-    
+
     jumps = []
     for shift in range(0, 360, phase_step):
         y = (phase + shift) % 360

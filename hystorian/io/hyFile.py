@@ -24,7 +24,7 @@ class HyPath:
     @property
     def path(self):
         return self._path
-    
+
     @property
     def stem(self):
         return self._path.split("/")[-1]
@@ -158,7 +158,9 @@ class HyFile:
         """
 
         if mode not in ["r", "r+", "w", "w-", "a"]:
-            raise TypeError("{mode} is not a valid file permission.\n Valid permissions are: 'r', 'r+', 'w', 'w-' or 'a'")
+            raise TypeError(
+                "{mode} is not a valid file permission.\n Valid permissions are: 'r', 'r+', 'w', 'w-' or 'a'"
+            )
         self.path = Path(path)
 
         if self.path.is_file():
@@ -221,7 +223,9 @@ class HyFile:
         else:
             return
 
-    def read(self, path: Optional[str | HyPath] = None, search: bool = False) -> list[str] | h5py.Datatype | npt.ArrayLike:
+    def read(
+        self, path: Optional[str | HyPath] = None, search: bool = False
+    ) -> list[str] | h5py.Datatype | npt.ArrayLike:
         """Wrapper around the __getitem__ of h5py. Directly returns the keys of the sub-groups if the path lead to an h5py.Group, otherwise directly load the dataset.
         This allows to get a list of keys to the folders without calling .keys(), and to the data without [()] therefore the way to call the keys or the data are the same.
         And therefore the user does not need to change the call between .keys() and [()] to navigate the hierarchical structure.
@@ -253,19 +257,21 @@ class HyFile:
             return current
         else:
             return current[()]
-        
+
     def is_empty_group(self, path: str):
         """Return True if the group (and its subgroups) contain no datasets."""
         found = False
+
         def visitor(name, obj):
             nonlocal found
             if isinstance(obj, h5py.Dataset):
                 found = True
                 return True  # stop traversal early
+
         self.file[path].visititems(visitor)
         return not found
-    
-    def delete(self, path: str | HyPath | int, renumber = True) -> None:
+
+    def delete(self, path: str | HyPath | int, renumber=True) -> None:
         """Remove a path from the file. If the path is a group, it will remove the group and all its subgroups and datasets. If the path is a dataset, it will remove the dataset.
 
         Parameters
@@ -283,17 +289,19 @@ class HyFile:
             path = path.path
 
         if path in self.file:
-            del self.file['/'.join(path.split('/')[:-1])]
+            del self.file["/".join(path.split("/")[:-1])]
             if renumber and path.startswith("process/"):
                 # If the path is a process, we need to renumber the processes
                 process_num = int(path.split("/")[1].split("-")[0])
                 for p in self.path_search("process/.*"):
                     p = p.path
                     if int(p.split("/")[1].split("-")[0]) > process_num:
-                        new_path = re.sub(r"(?<=process/)(\d+)", lambda m: f"{int(m.group(1)) - 1:0{len(m.group(1))}d}", p,count=1)
+                        new_path = re.sub(
+                            r"(?<=process/)(\d+)", lambda m: f"{int(m.group(1)) - 1:0{len(m.group(1))}d}", p, count=1
+                        )
                         self.file.move(p, new_path)
-                        if self.is_empty_group('/'.join(p.split('/')[:2])):
-                            del self.file['/'.join(p.split('/')[:2])]
+                        if self.is_empty_group("/".join(p.split("/")[:2])):
+                            del self.file["/".join(p.split("/")[:2])]
 
         else:
             raise KeyError(f"Path {path} does not exist in the file.")
@@ -341,7 +349,9 @@ class HyFile:
             result = tuple([result])
 
         if len(output_names) != len(result):
-            raise ValueError(f"Error: Unequal amount of outputs ({len(result)}) and output names ({len(output_names)}).")
+            raise ValueError(
+                f"Error: Unequal amount of outputs ({len(result)}) and output names ({len(output_names)})."
+            )
 
         num_proc = len(self.read("process"))
 
@@ -548,10 +558,10 @@ class HyFile:
                     del f[key]
                 else:
                     raise KeyError("Key already exist and overwriste is set to False.")
-                
+
             # Uses create_dataset and NOT _create_dataset (which would be recursive).
             # The former is the h5py method to create datasets.
-            f.create_dataset(key, data=data) 
+            f.create_dataset(key, data=data)
 
     def _generate_deep_groups(self, deep_dict: dict[str, dict], f: Optional[h5pyType] = None):
         """_generate_deep_groups
