@@ -27,7 +27,10 @@ class HyPath:
 
     @property
     def stem(self):
-        return self._path.split("/")[-1]
+        return self.split("/")[-1]
+
+    def split(self, separator=None, maxsplit=-1):
+        return self._path.split(separator, maxsplit)
 
     def __str__(self):
         return self._path
