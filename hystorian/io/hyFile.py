@@ -254,6 +254,17 @@ class HyFile:
         else:
             return current[()]
         
+    def is_empty_group(self, path: str):
+        """Return True if the group (and its subgroups) contain no datasets."""
+        found = False
+        def visitor(name, obj):
+            nonlocal found
+            if isinstance(obj, h5py.Dataset):
+                found = True
+                return True  # stop traversal early
+        self.file[path].visititems(visitor)
+        return not found
+    
     def delete(self, path: str | HyPath | int, renumber = True) -> None:
         """Remove a path from the file. If the path is a group, it will remove the group and all its subgroups and datasets. If the path is a dataset, it will remove the dataset.
 
@@ -279,11 +290,10 @@ class HyFile:
                 for p in self.path_search("process/.*"):
                     p = p.path
                     if int(p.split("/")[1].split("-")[0]) > process_num:
-                        new_key = f"process/{str(int(p.split('/')[1].split('-')[0]) - 1).zfill(3)}-{p.split('/')[1].split('-')[1]}"
-                        self.file.move(p, f"{new_key}/{p.split('/')[-1]}")
-
-                        if len(self.file['/'.join(p.split('/')[:-1])].keys()) == 0:
-                            del self.file['/'.join(p.split('/')[:-1])]
+                        new_path = re.sub(r"(?<=process/)(\d+)", lambda m: f"{int(m.group(1)) - 1:0{len(m.group(1))}d}", p,count=1)
+                        self.file.move(p, new_path)
+                        if self.is_empty_group('/'.join(p.split('/')[:2])):
+                            del self.file['/'.join(p.split('/')[:2])]
 
         else:
             raise KeyError(f"Path {path} does not exist in the file.")
