@@ -253,6 +253,40 @@ class HyFile:
             return current
         else:
             return current[()]
+        
+    def delete(self, path: str | HyPath | int, renumber = True) -> None:
+        """Remove a path from the file. If the path is a group, it will remove the group and all its subgroups and datasets. If the path is a dataset, it will remove the dataset.
+
+        Parameters
+        ----------
+        path : str | HyPath | int
+            Path to the group or dataset you want to remove, or a number which will be used to remove the n-th process folder.
+        """
+        if isinstance(path, int):
+            tmp = self.path_search(f"process.*{str(path).zfill(3)}.*")
+            if len(tmp) == 0:
+                raise KeyError(f"Process {path} does not exist in the file.")
+            path = tmp[0]
+
+        if isinstance(path, HyPath):
+            path = path.path
+
+        if path in self.file:
+            del self.file['/'.join(path.split('/')[:-1])]
+            if renumber and path.startswith("process/"):
+                # If the path is a process, we need to renumber the processes
+                process_num = int(path.split("/")[1].split("-")[0])
+                for p in self.path_search("process/.*"):
+                    p = p.path
+                    if int(p.split("/")[1].split("-")[0]) > process_num:
+                        new_key = f"process/{str(int(p.split('/')[1].split('-')[0]) - 1).zfill(3)}-{p.split('/')[1].split('-')[1]}"
+                        self.file.move(p, f"{new_key}/{p.split('/')[-1]}")
+
+                        if len(self.file['/'.join(p.split('/')[:-1])].keys()) == 0:
+                            del self.file['/'.join(p.split('/')[:-1])]
+
+        else:
+            raise KeyError(f"Path {path} does not exist in the file.")
 
     def apply(
         self,
