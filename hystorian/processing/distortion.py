@@ -68,7 +68,7 @@ def find_transform_ORB(ir, iw, order=1, random_seed=None):
 
     model_final = skimage.transform.PolynomialTransform()
     model_final.params = np.vstack((coeff2, coeff1))
-    return model_final
+    return model_final.params
 
 
 # The following implementation is based on:
