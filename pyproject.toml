@@ -30,6 +30,7 @@ dev = [
     "sphinx-rtd-theme>=3.0.2,<4",
     "ipykernel>=6.23.0,<7",
     "pooch>=1.8.2",
+    "pre-commit>=4.3.0",
 ]
 
 [build-system]
