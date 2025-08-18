@@ -1,7 +1,6 @@
 from unittest.mock import patch
 
 import numpy as np
-import pytest
 
 from hystorian.processing.spm import (
     binarize_phase,

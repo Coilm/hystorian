@@ -1,5 +1,4 @@
 import numpy as np
-import scipy.ndimage as ndi
 
 from skimage.color import rgb2gray
 from skimage.data import astronaut

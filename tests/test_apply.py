@@ -1,12 +1,10 @@
 import os
 import pathlib
-import unittest
 
 import numpy as np
 import pytest
-from igor2 import binarywave
 
-from hystorian.io import hyFile, utils
+from hystorian.io import hyFile
 
 filepath = pathlib.Path("tests/test_files/test.hdf5")
 
