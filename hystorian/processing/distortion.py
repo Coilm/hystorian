@@ -3,6 +3,7 @@ import warnings
 import numpy as np
 import skimage
 from scipy import ndimage as ndi
+
 from .utils import normalize
 
 
@@ -111,6 +112,12 @@ def custom_warp(im, mat, motion_type="affine", order=1):
         pt += (1,)
         points_unwarping = mat @ np.array(pt).T
         return tuple(points_unwarping)
+
+    if np.shape(mat)[0] != np.shape(mat)[1]:  # This is probably a polynomial transform
+        model_final = skimage.transform.PolynomialTransform()
+        model_final.params = mat
+        # Warp does not use the same convention as ndi so we need to transpose the image (xy vs ij convention)
+        return skimage.transform.warp(im.T, model_final)
 
     if motion_type == "homography":
         return ndi.geometric_transform(im, coord_mapping, order=order, extra_arguments=(mat,))
