@@ -10,7 +10,7 @@ extractor_registery = {}
 
 def initialize():
     for import_path, regex in zip(
-        [".ibw_files", ".ardf_files", ".nanoscope_files", ".gsf_files"],
+        [".ibw_files", ".ardf_files", ".nanoscope_files", ".gsf_files", "sxm_files"],
         [r"\.ibw", r"(?i).ARDF", r".\d{3}", r"\.gsf"],
     ):
         success, imported_package = _dynamic_import(import_path, package="hystorian.io.extractors")
