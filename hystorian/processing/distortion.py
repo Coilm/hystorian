@@ -10,10 +10,10 @@ from .utils import normalize
 def find_transform(ir, iw, method="ECC", **kwargs):
     if method == "ECC":
         return find_transform_ecc(ir, iw, **kwargs)
-    elif method == "ORB":
-        return find_transform_ORB(ir, iw, **kwargs)
+    elif (method == "ORB") or (method == "CENSURE"):
+        return find_transform_feature_detection(ir, iw, **kwargs)
     else:
-        raise ValueError(f"Method {method} is not supported. Use 'ECC' or 'ORB'.")
+        raise ValueError(f"Method {method} is not supported. Use 'ECC', 'ORB' or 'CENSURE'.")
 
 
 def get_polynomial_terms(X, Y, degree):
@@ -25,14 +25,16 @@ def get_polynomial_terms(X, Y, degree):
     return np.stack(terms, axis=1)
 
 
-def find_transform_ORB(ir, iw, order=1, random_seed=None):
+def find_transform_feature_detection(ir, iw, detector="ORB", order=1, random_seed=None):
     if random_seed:
         np.random.seed(random_seed)
 
     ir = normalize(ir, log=True)
     iw = normalize(iw, log=True)
-
-    descriptor_extractor = skimage.feature.ORB(harris_k=0)
+    if detector == "ORB":
+        descriptor_extractor = skimage.feature.ORB(harris_k=0)
+    elif detector == "CENSURE":
+        descriptor_extractor = skimage.feature.CENSURE()
 
     descriptor_extractor.detect_and_extract(ir)
     keypoints1 = descriptor_extractor.keypoints
@@ -117,7 +119,7 @@ def custom_warp(im, mat, motion_type="affine", order=1):
         model_final = skimage.transform.PolynomialTransform()
         model_final.params = mat
         # Warp does not use the same convention as ndi so we need to transpose the image (xy vs ij convention)
-        return skimage.transform.warp(im.T, model_final)
+        return skimage.transform.warp(im.T, model_final, preserve_range=True, cval=np.nan).T
 
     if motion_type == "homography":
         return ndi.geometric_transform(im, coord_mapping, order=order, extra_arguments=(mat,))
