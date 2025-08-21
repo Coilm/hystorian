@@ -79,7 +79,7 @@ def find_transform_feature_detection(ir, iw, detector="ORB", order=1, random_see
 # IEEE Transactions on Pattern Analysis and Machine Intelligence, 30(10), 1858–1865.
 
 
-def custom_warp(im, mat, motion_type="affine", order=1):
+def custom_warp(im, mat, motion_type="affine", order=1, cval=0.0):
     """
     Applies a geometric transformation to an image using a specified transformation matrix.
 
@@ -119,12 +119,12 @@ def custom_warp(im, mat, motion_type="affine", order=1):
         model_final = skimage.transform.PolynomialTransform()
         model_final.params = mat
         # Warp does not use the same convention as ndi so we need to transpose the image (xy vs ij convention)
-        return skimage.transform.warp(im.T, model_final, preserve_range=True, cval=np.nan).T
+        return skimage.transform.warp(im.T, model_final, preserve_range=True, cval=cval).T
 
     if motion_type == "homography":
-        return ndi.geometric_transform(im, coord_mapping, order=order, extra_arguments=(mat,))
+        return ndi.geometric_transform(im, coord_mapping, order=order, cval=cval, extra_arguments=(mat,))
     else:
-        return ndi.affine_transform(im, mat, order=order)
+        return ndi.affine_transform(im, mat, order=order, cval=cval)
 
 
 def find_transform_ecc(
