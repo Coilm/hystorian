@@ -1,0 +1,215 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hystorian Documentation &mdash; Hystorian 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=51b770b3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="HyFile" href="hyfile.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Hystorian
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="hyfile.html">HyFile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conversion.html">File Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="processing.html">Processing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Hystorian</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Hystorian Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="hystorian-documentation">
+<h1>Hystorian Documentation<a class="headerlink" href="#hystorian-documentation" title="Link to this heading"></a></h1>
+<p>Hystorian is a Python package based on h5py, designed for scientists to help manage, archive, and analyze data from Scanning Probe Microscopy (SPM) experiments and related sources.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Hystorian provides a unified framework for:</p>
+<ul class="simple">
+<li><p>Storing experimental data in HDF5 format for efficient access and archiving.</p></li>
+<li><p>Converting raw data files from common SPM instruments (e.g., GSF, IBW, Nanoscope, ARDF) into HDF5.</p></li>
+<li><p>Extracting, processing, and analyzing experimental datasets.</p></li>
+<li><p>Applying advanced image alignment and distortion correction algorithms.</p></li>
+<li><p>Managing experiment metadata, results, and reproducibility.</p></li>
+<li><p>Extensible processing: apply custom and built-in processing functions to datasets.</p></li>
+</ul>
+</section>
+<section id="key-features">
+<h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Data Conversion:</strong> Import and convert raw files from various SPM instruments.</p></li>
+<li><p><strong>Unified Data Storage:</strong> Organize and archive data using HDF5, supporting metadata and hierarchical structures.</p></li>
+<li><p><strong>Distortion Correction:</strong> Correct image distortions for accurate quantitative analysis.</p></li>
+<li><p><strong>Experiment Management:</strong> Tools for handling experiment metadata, results, and reproducibility.</p></li>
+<li><p><strong>Extensible Processing:</strong> Apply custom and built-in processing functions to datasets.</p></li>
+</ul>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>hystorian
+</pre></div>
+</div>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hystorian.io.hyFile</span><span class="w"> </span><span class="kn">import</span> <span class="n">HyFile</span>
+<span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;mydata.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">extract_data</span><span class="p">(</span><span class="s1">&#39;/path/to/file.ibw&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p>This section provides a comprehensive overview of the Hystorian Python package API, organized by module. Use the links below to explore the available classes, functions, and utilities for data management, conversion, processing, and experiment analysis.</p>
+</section>
+<section id="core-modules">
+<h2>Core Modules<a class="headerlink" href="#core-modules" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="hyfile.html"><span class="doc">HyFile</span></a> — HDF5 file management and data extraction</p></li>
+<li><p><a class="reference internal" href="conversion.html"><span class="doc">File Conversion</span></a> — Raw file conversion utilities</p></li>
+<li><p><a class="reference internal" href="processing.html"><span class="doc">Processing</span></a> — Distortion correction and data processing</p></li>
+<li><p><a class="reference internal" href="experiments.html"><span class="doc">Experiments</span></a> — Experiment organization and analysis</p></li>
+</ul>
+<section id="how-to-use">
+<h3>How to Use<a class="headerlink" href="#how-to-use" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open and extract data from an HDF5 file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hystorian.io.hyFile</span><span class="w"> </span><span class="kn">import</span> <span class="n">HyFile</span>
+<span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;data.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">extract_data</span><span class="p">(</span><span class="s1">&#39;/path/to/raw/file.ibw&#39;</span><span class="p">)</span>
+
+<span class="c1"># Apply processing functions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hystorian.processing.distortion</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_transform_ecc</span>
+<span class="n">warp_matrix</span> <span class="o">=</span> <span class="n">find_transform_ecc</span><span class="p">(</span><span class="n">reference_image</span><span class="p">,</span> <span class="n">image_to_align</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="documentation-contents">
+<h2>Documentation Contents<a class="headerlink" href="#documentation-contents" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="hyfile.html">HyFile</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hyfile.html#hystorian.io.hyFile.HyApply"><code class="docutils literal notranslate"><span class="pre">HyApply</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="hyfile.html#hystorian.io.hyFile.HyFile"><code class="docutils literal notranslate"><span class="pre">HyFile</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="hyfile.html#hystorian.io.hyFile.HyPath"><code class="docutils literal notranslate"><span class="pre">HyPath</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="hyfile.html#example-extract-and-process-data">Example: Extract and process data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="conversion.html">File Conversion</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="conversion.html#module-hystorian.io.utils">HyConvertedData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conversion.html#conversion-functions">Conversion Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conversion.html#example-convert-a-raw-file">Example: Convert a raw file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="experiments.html#hystorian.experiments.cypher.extract_hysteresis"><code class="docutils literal notranslate"><span class="pre">extract_hysteresis()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="processing.html">Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="processing.html#distortion-correction">Distortion Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="processing.html#general-correction">General Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="processing.html#spm-utilities">SPM Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="processing.html#operations">Operations</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="publication-source">
+<h2>Publication Source<a class="headerlink" href="#publication-source" title="Link to this heading"></a></h2>
+<p>For a detailed description of the concepts and algorithms implemented in Hystorian, see:</p>
+<p>Loïc Musy, Ralph Bulanadi, Iaroslav Gaponenko, Patrycja Paruch,
+<em>Hystorian: A processing tool for scanning probe microscopy and other n-dimensional datasets</em>
+Ultramicroscopy, Volume 228, 2021
+<a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0304399121001273">https://www.sciencedirect.com/science/article/pii/S0304399121001273</a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This project is under active development.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hyfile.html" class="btn btn-neutral float-right" title="HyFile" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Loïc Musy, Ralph Bulanadi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

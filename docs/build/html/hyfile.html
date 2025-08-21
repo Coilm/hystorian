@@ -1,0 +1,343 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HyFile &mdash; Hystorian 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=51b770b3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="File Conversion" href="conversion.html" />
+    <link rel="prev" title="Hystorian Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Hystorian
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">HyFile</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hystorian.io.hyFile.HyApply"><code class="docutils literal notranslate"><span class="pre">HyApply</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyApply.apply"><code class="docutils literal notranslate"><span class="pre">HyApply.apply()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#hystorian.io.hyFile.HyFile"><code class="docutils literal notranslate"><span class="pre">HyFile</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyFile.path"><code class="docutils literal notranslate"><span class="pre">HyFile.path</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyFile.file"><code class="docutils literal notranslate"><span class="pre">HyFile.file</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyFile.attrs"><code class="docutils literal notranslate"><span class="pre">HyFile.attrs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyFile.Attributes"><code class="docutils literal notranslate"><span class="pre">HyFile.Attributes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyFile.apply"><code class="docutils literal notranslate"><span class="pre">HyFile.apply()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyFile.delete"><code class="docutils literal notranslate"><span class="pre">HyFile.delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyFile.extract_data"><code class="docutils literal notranslate"><span class="pre">HyFile.extract_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyFile.is_empty_group"><code class="docutils literal notranslate"><span class="pre">HyFile.is_empty_group()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyFile.last_process"><code class="docutils literal notranslate"><span class="pre">HyFile.last_process</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyFile.merge"><code class="docutils literal notranslate"><span class="pre">HyFile.merge()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyFile.multiple_apply"><code class="docutils literal notranslate"><span class="pre">HyFile.multiple_apply()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyFile.path_search"><code class="docutils literal notranslate"><span class="pre">HyFile.path_search()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyFile.read"><code class="docutils literal notranslate"><span class="pre">HyFile.read()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#hystorian.io.hyFile.HyPath"><code class="docutils literal notranslate"><span class="pre">HyPath</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyPath.path"><code class="docutils literal notranslate"><span class="pre">HyPath.path</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyPath.split"><code class="docutils literal notranslate"><span class="pre">HyPath.split()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.io.hyFile.HyPath.stem"><code class="docutils literal notranslate"><span class="pre">HyPath.stem</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#example-extract-and-process-data">Example: Extract and process data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="conversion.html">File Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="processing.html">Processing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Hystorian</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">HyFile</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/hyfile.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="hyfile">
+<h1>HyFile<a class="headerlink" href="#hyfile" title="Link to this heading"></a></h1>
+<p>HyFile is the main interface for reading, writing, and processing HDF5 files in Hystorian.</p>
+<dl class="py class" id="module-hystorian.io.hyFile">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyApply">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hystorian.io.hyFile.</span></span><span class="sig-name descname"><span class="pre">HyApply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.io.hyFile.HyApply" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyApply.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.io.hyFile.HyApply.apply" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyFile">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hystorian.io.hyFile.</span></span><span class="sig-name descname"><span class="pre">HyFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'r'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.io.hyFile.HyFile" title="Link to this definition"></a></dt>
+<dd><p>HyFile is a class that wraps around the h5py.File class and is used to create and manipulate datafile from proprieteray files</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyFile.path">
+<span class="sig-name descname"><span class="pre">path</span></span><a class="headerlink" href="#hystorian.io.hyFile.HyFile.path" title="Link to this definition"></a></dt>
+<dd><p>Path to the hdf5 file to be manipulated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyFile.file">
+<span class="sig-name descname"><span class="pre">file</span></span><a class="headerlink" href="#hystorian.io.hyFile.HyFile.file" title="Link to this definition"></a></dt>
+<dd><p>Handle of the file: the class call h5py.File(path). If the file does not exist, it is generated. (See __init__ docstring for more details).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>h5py.File</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyFile.attrs">
+<span class="sig-name descname"><span class="pre">attrs</span></span><a class="headerlink" href="#hystorian.io.hyFile.HyFile.attrs" title="Link to this definition"></a></dt>
+<dd><p>Attributes is an internal class, which allow the manipulation of hdf5 attributes through HyFile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#hystorian.io.hyFile.HyFile.Attributes" title="hystorian.io.hyFile.HyFile.Attributes">Attributes</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyFile.Attributes">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">File</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.io.hyFile.HyFile.Attributes" title="Link to this definition"></a></dt>
+<dd><p>Internal class of HyFile which allows for the manipulation of attributes inside an hdf5 file in the same way than h5py does.</p>
+<p class="rubric">Examples</p>
+<ul class="simple">
+<li><p>This will navigate to the Dataset located at ‘path/to/data’ and read the attribute with the key ‘important_attribute’.</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;path/to/data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">(</span><span class="s1">&#39;important_attribute&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>This will navigate to the Dataset located at ‘path/to/data’ and write (or overwrite if it already exists) the attribute with key new_attribute and set it to 0.</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;path/to/data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">(</span><span class="s1">&#39;new_attribute&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyFile.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increment_proc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.io.hyFile.HyFile.apply" title="Link to this definition"></a></dt>
+<dd><p>apply allows to call a function and store all the inputs and outputs in the hdf5 file with the raw data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>function</strong> (<em>Callable</em>) – function used to transform the data. Result of the function will be stored in process/XXX-&lt;function-name&gt;, where XXX is an incrementing number for each already existing process.</p></li>
+<li><p><strong>*args</strong> (<em>Any</em>) – All the positional arguments for the above function. If an HyPath is present in args, then self.file.read() will be called for this argument.</p></li>
+<li><p><strong>output_names</strong> (<em>Optional</em><em>[</em><em>list</em><em>[</em><em>str</em><em>]  </em><em>|  </em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Name to be given to the result of the function. The number of names should be the same as the number of outputs of the function passed,
+othewise a ValueError will be raised, if None is passed, the name of the function will be used, by default None.</p></li>
+<li><p><strong>increment_proc</strong> (<em>bool</em><em>, </em><em>optional</em>) – if a process/XXX-&lt;function-name&gt; already exist and increment_proc is set to true, the result will be save in the existing folder, otherwise it will generated a new folder, by default True</p></li>
+<li><p><strong>**kwargs</strong> (<em>Any</em>) – All the keyword arguments for the above function. If an HyPath is present in kwargs, then self.file.read() will be called for this argument.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyFile.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#hystorian.io.hyFile.HyPath" title="hystorian.io.hyFile.HyPath"><span class="pre">HyPath</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renumber</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hystorian.io.hyFile.HyFile.delete" title="Link to this definition"></a></dt>
+<dd><p>Remove a path from the file. If the path is a group, it will remove the group and all its subgroups and datasets. If the path is a dataset, it will remove the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em><em> | </em><a class="reference internal" href="#hystorian.io.hyFile.HyPath" title="hystorian.io.hyFile.HyPath"><em>HyPath</em></a><em> | </em><em>int</em>) – Path to the group or dataset you want to remove, or a number which will be used to remove the n-th process folder.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyFile.extract_data">
+<span class="sig-name descname"><span class="pre">extract_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hystorian.io.hyFile.HyFile.extract_data" title="Link to this definition"></a></dt>
+<dd><p>Extract the data, metadata and attributes from a file given by path.
+Currently supported files are:</p>
+<ul class="simple">
+<li><p>.gsf (Gwyddion Simple Field): generated by Gwyddion</p></li>
+<li><p>.ibw (Igor Binary Wave): generated by Asylum AFM. (might work for other kind of ibw files)</p></li>
+<li><p>.000 : Nanoscope files</p></li>
+<li><p>.ARDF : generated by Asylum AFM (for ForceMaps and SSPFM)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em><em> | </em><em>Path</em>) – path to the file to be converted. If a string is provided it is converted to Path.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If the file you pass through path does not have a conversion function, will raise an error.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyFile.is_empty_group">
+<span class="sig-name descname"><span class="pre">is_empty_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.io.hyFile.HyFile.is_empty_group" title="Link to this definition"></a></dt>
+<dd><p>Return True if the group (and its subgroups) contain no datasets.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyFile.last_process">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">last_process</span></span><a class="headerlink" href="#hystorian.io.hyFile.HyFile.last_process" title="Link to this definition"></a></dt>
+<dd><p>returns a string which is the path to the last process in the hdf5 file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyFile.merge">
+<span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tomerge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hystorian.io.hyFile.HyFile.merge" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyFile.multiple_apply">
+<span class="sig-name descname"><span class="pre">multiple_apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_args</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increment_proc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.io.hyFile.HyFile.multiple_apply" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyFile.path_search">
+<span class="sig-name descname"><span class="pre">path_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">criterion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.*'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#hystorian.io.hyFile.HyPath" title="hystorian.io.hyFile.HyPath"><span class="pre">HyPath</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#hystorian.io.hyFile.HyFile.path_search" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyFile.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#hystorian.io.hyFile.HyPath" title="hystorian.io.hyFile.HyPath"><span class="pre">HyPath</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Datatype</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Buffer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">_SupportsArray</span><span class="p"><span class="pre">[</span></span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">complex</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_NestedSequence</span><span class="p"><span class="pre">[</span></span><span class="pre">complex</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#hystorian.io.hyFile.HyFile.read" title="Link to this definition"></a></dt>
+<dd><p>Wrapper around the __getitem__ of h5py. Directly returns the keys of the sub-groups if the path lead to an h5py.Group, otherwise directly load the dataset.
+This allows to get a list of keys to the folders without calling .keys(), and to the data without [()] therefore the way to call the keys or the data are the same.
+And therefore the user does not need to change the call between .keys() and [()] to navigate the hierarchical structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Path to the Group or Dataset you want to read. If the value is None, read the root of the folder (should be [datasets, metadata, process] if created with Hystorian), by default None</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>If the path lead to Groups, will return a list of the subgroups, if it lead to a Dataset containing data, it will directly return the data, and if it is an empty Dataset, will return its Datatype.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[str] | h5py.Datatype | npt.ArrayLike</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyPath">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hystorian.io.hyFile.</span></span><span class="sig-name descname"><span class="pre">HyPath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.io.hyFile.HyPath" title="Link to this definition"></a></dt>
+<dd><dl class="py property">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyPath.path">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">path</span></span><a class="headerlink" href="#hystorian.io.hyFile.HyPath.path" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyPath.split">
+<span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxsplit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.io.hyFile.HyPath.split" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hystorian.io.hyFile.HyPath.stem">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stem</span></span><a class="headerlink" href="#hystorian.io.hyFile.HyPath.stem" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<section id="example-extract-and-process-data">
+<h2>Example: Extract and process data<a class="headerlink" href="#example-extract-and-process-data" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hystorian.io.hyFile</span><span class="w"> </span><span class="kn">import</span> <span class="n">HyFile</span>
+<span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;data.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">extract_data</span><span class="p">(</span><span class="s1">&#39;/path/to/file.ibw&#39;</span><span class="p">)</span>
+    <span class="c1"># Apply a function to a dataset</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">hystorian.io.hyFile</span><span class="w"> </span><span class="kn">import</span> <span class="n">HyPath</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/data/grid&#39;</span><span class="p">),</span> <span class="n">output_names</span><span class="o">=</span><span class="s1">&#39;grid_mean&#39;</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;random.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/data/grid&#39;</span><span class="p">),</span> <span class="n">output_names</span><span class="o">=</span><span class="s1">&#39;grid_sum&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/data/grid&#39;</span><span class="p">),</span> <span class="n">output_names</span><span class="o">=</span><span class="s1">&#39;grid_sum&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span> <span class="p">[</span><span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/data/grid&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/data/grid2&#39;</span><span class="p">)],</span> <span class="n">output_names</span><span class="o">=</span><span class="s1">&#39;grid_sum&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">multiple_apply</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span> <span class="p">[</span><span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/data/grid&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/data/grid2&#39;</span><span class="p">)],</span> <span class="n">output_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;grid_sum&#39;</span><span class="p">,</span> <span class="s1">&#39;grid_sum2&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Hystorian Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="conversion.html" class="btn btn-neutral float-right" title="File Conversion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Loïc Musy, Ralph Bulanadi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

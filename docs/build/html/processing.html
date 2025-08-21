@@ -1,0 +1,527 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Processing &mdash; Hystorian 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=51b770b3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Experiments" href="experiments.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Hystorian
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="hyfile.html">HyFile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conversion.html">File Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#distortion-correction">Distortion Correction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.processing.distortion.compute_hessian"><code class="docutils literal notranslate"><span class="pre">compute_hessian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.processing.distortion.compute_jacobian"><code class="docutils literal notranslate"><span class="pre">compute_jacobian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.processing.distortion.custom_warp"><code class="docutils literal notranslate"><span class="pre">custom_warp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.processing.distortion.find_transform_ecc"><code class="docutils literal notranslate"><span class="pre">find_transform_ecc()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.processing.distortion.project_onto_jacobian"><code class="docutils literal notranslate"><span class="pre">project_onto_jacobian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.processing.distortion.update_warping_matrix"><code class="docutils literal notranslate"><span class="pre">update_warping_matrix()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#general-correction">General Correction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.processing.correction.line_fit"><code class="docutils literal notranslate"><span class="pre">line_fit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.processing.correction.line_flatten_image"><code class="docutils literal notranslate"><span class="pre">line_flatten_image()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.processing.correction.plane_flatten_image"><code class="docutils literal notranslate"><span class="pre">plane_flatten_image()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#spm-utilities">SPM Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.processing.spm.binarize_phase"><code class="docutils literal notranslate"><span class="pre">binarize_phase()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.processing.spm.clean_loop"><code class="docutils literal notranslate"><span class="pre">clean_loop()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.processing.spm.pfm_params_map"><code class="docutils literal notranslate"><span class="pre">pfm_params_map()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.processing.spm.shift_and_wrap_phase"><code class="docutils literal notranslate"><span class="pre">shift_and_wrap_phase()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#operations">Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hystorian.processing.operation.gauss_area"><code class="docutils literal notranslate"><span class="pre">gauss_area()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Hystorian</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Processing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/processing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="processing">
+<h1>Processing<a class="headerlink" href="#processing" title="Link to this heading"></a></h1>
+<p>This module provides data processing utilities for SPM experiments, including distortion correction, general operations, and helper functions.</p>
+<section id="distortion-correction">
+<h2>Distortion Correction<a class="headerlink" href="#distortion-correction" title="Link to this heading"></a></h2>
+<p>Algorithms for correcting image distortions and aligning SPM data.</p>
+<dl class="py function" id="module-hystorian.processing.distortion">
+<dt class="sig sig-object py" id="hystorian.processing.distortion.compute_hessian">
+<span class="sig-prename descclassname"><span class="pre">hystorian.processing.distortion.</span></span><span class="sig-name descname"><span class="pre">compute_hessian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jac</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.processing.distortion.compute_hessian" title="Link to this definition"></a></dt>
+<dd><p>Computes the Hessian matrix from the Jacobian for ECC optimization.</p>
+<p>The Hessian matrix quantifies the second-order partial derivatives of the cost function with respect to the transformation parameters.
+It is constructed by summing the outer products of the Jacobian across all spatial axes, resulting in a symmetric matrix
+that is used to update the transformation parameters during optimization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>jac</strong> (<em>ndarray</em>) – The Jacobian matrix, typically of shape (num_params, H, W) for 2D images or (num_params, D, H, W) for 3D images.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Hessian matrix, of shape (num_params, num_params).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The implementation uses <cite>np.tensordot</cite> to sum the products of the Jacobian over all spatial axes, which generalizes to higher dimensions.</p>
+<p>This is equivalent to the following code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hessian</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">jac</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">jac</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">jac</span><span class="p">)[</span><span class="mi">0</span><span class="p">]):</span>
+    <span class="n">hessian</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">jac</span><span class="p">[</span><span class="n">i</span><span class="p">,:,:],</span> <span class="n">jac</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">jac</span><span class="p">)[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">hessian</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">jac</span><span class="p">[</span><span class="n">i</span><span class="p">,:,:],</span> <span class="n">jac</span><span class="p">[</span><span class="n">j</span><span class="p">,:,:]))</span>
+        <span class="n">hessian</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">hessian</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hystorian.processing.distortion.compute_jacobian">
+<span class="sig-prename descclassname"><span class="pre">hystorian.processing.distortion.</span></span><span class="sig-name descname"><span class="pre">compute_jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grad</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xy_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warp_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motion_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'affine'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.processing.distortion.compute_jacobian" title="Link to this definition"></a></dt>
+<dd><p>Computes the Jacobian matrix of the warped image with respect to the transformation parameters.</p>
+<p>The Jacobian describes how small changes in the transformation parameters affect the pixel intensities
+of the warped image. Mathematically, the Jacobian is defined as the matrix of partial derivatives of the
+warped image with respect to the parameter vector, i.e., J(x; p) = ∂w(x; p)/∂p
+(see Evangelidis &amp; Psarakis, 2008, IEEE TPAMI, p. 1859).</p>
+<p>This function supports multiple motion models, including translation, affine,
+euclidean, homography, and their 3D variants. The appropriate Jacobian computation is selected based
+on the dimensionality of the input and the specified motion type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grad</strong> (<em>ndarray</em>) – Gradient(s) of the warped image.</p></li>
+<li><p><strong>xy_grid</strong> (<em>list</em><em> of </em><em>ndarray</em>) – Meshgrid coordinates corresponding to the image dimensions.</p></li>
+<li><p><strong>warp_matrix</strong> (<em>ndarray</em>) – Current transformation matrix.</p></li>
+<li><p><strong>motion_type</strong> (<em>str</em><em>, </em><em>optional</em>) – Type of transformation: “translation”, “affine”, “euclidean”, “homography”.
+Default is “affine”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The computed Jacobian matrix, with shape depending on the motion model and image dimensionality.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>The returned Jacobian is used in ECC optimization to update transformation parameters.</p></li>
+<li><p>For 2D images, the Jacobian shape is (num_params, H, W).</p></li>
+<li><p>For 3D images, the Jacobian shape is (num_params, D, H, W).</p></li>
+<li><p>The <cite>grad</cite> parameter should be a sequence (such as a list or array) containing the spatial gradients of the warped image.
+For 2D images, this is typically [grad_x, grad_y], and for 3D images, [grad_x, grad_y, grad_z]. Each gradient array
+should have the same shape as the warped image and represent the rate of change of pixel intensities along the respective axis.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hystorian.processing.distortion.custom_warp">
+<span class="sig-prename descclassname"><span class="pre">hystorian.processing.distortion.</span></span><span class="sig-name descname"><span class="pre">custom_warp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">im</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motion_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'affine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.processing.distortion.custom_warp" title="Link to this definition"></a></dt>
+<dd><p>Applies a geometric transformation to an image using a specified transformation matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>im</strong> (<em>ndarray</em>) – The input image array to be transformed.</p></li>
+<li><p><strong>mat</strong> (<em>ndarray</em>) – The transformation matrix. For affine, this is typically a 2x3 or 3x3 matrix.
+For homography, this should be a 3x3 matrix.</p></li>
+<li><p><strong>motion_type</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of transformation to apply. Supported values are “affine” and “homography”.
+Default is “affine”.</p></li>
+<li><p><strong>order</strong> (<em>int</em><em>, </em><em>optional</em>) – The order of the spline interpolation used for the transformation.
+Default is 1 (linear interpolation).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The transformed (warped) image.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>This function supports both affine and homography transformations.</p></li>
+<li><p>For affine transformations, it uses <cite>scipy.ndimage.affine_transform</cite>, which applies a linear mapping from input coordinates to output coordinates.</p></li>
+<li><p>For homography transformations, it uses <cite>scipy.ndimage.geometric_transform</cite> with a custom coordinate mapping function, allowing for more complex projective transformations.</p></li>
+<li><p>The function assumes the transformation matrix is correctly formatted for the chosen motion type.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hystorian.processing.distortion.find_transform_ecc">
+<span class="sig-prename descclassname"><span class="pre">hystorian.processing.distortion.</span></span><span class="sig-name descname"><span class="pre">find_transform_ecc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warp_matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motion_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'affine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_of_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">termination_eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gauss_filt_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.processing.distortion.find_transform_ecc" title="Link to this definition"></a></dt>
+<dd><p>Estimates the geometric transformation matrix that best aligns a warped image (iw) to a reference image (ir)
+by maximizing the Enhanced Correlation Coefficient (ECC).</p>
+<p>The function iteratively updates the transformation matrix to maximize the normalized correlation between
+the reference and warped images. It supports several motion models, including translation, affine, euclidean,
+and homography. Gaussian filtering is applied to both images before alignment to reduce noise and improve stability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ir</strong> (<em>ndarray</em>) – Reference image (target for alignment).</p></li>
+<li><p><strong>iw</strong> (<em>ndarray</em>) – Warped image to be corrected.</p></li>
+<li><p><strong>warp_matrix</strong> (<em>ndarray</em><em>, </em><em>optional</em>) – Initial guess for the transformation matrix. If None, an identity matrix is used.
+Should be 3x3 for 2D images or 4x4 for 3D images.
+Default is None.</p></li>
+<li><p><strong>motion_type</strong> (<em>str</em><em>, </em><em>optional</em>) – Type of transformation: “translation”, “affine”, “euclidean”, or “homography”.
+Default is “affine”.</p></li>
+<li><p><strong>number_of_iterations</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum number of iterations before the algorithm stops. Default is 200.</p></li>
+<li><p><strong>termination_eps</strong> (<em>float</em><em>, </em><em>optional</em>) – Threshold for the absolute difference between the normalized correlation of successive iterations.
+If the difference is less than this value, the algorithm stops. Default is -1.0 (no early stopping).</p></li>
+<li><p><strong>gauss_filt_size</strong> (<em>float</em><em>, </em><em>optional</em>) – Standard deviation for Gaussian kernel used to blur ir and iw before alignment. Default is 5.0.</p></li>
+<li><p><strong>order</strong> (<em>int</em><em>, </em><em>optional</em>) – Interpolation order used in the warp function. Default is 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>warp_matrix</strong> – The transformation matrix that best aligns iw to ir.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – <ul class="simple">
+<li><p>If the correlation coefficient (rho) becomes NaN, indicating a failure in the algorithm.
+    - If the algorithm stops before convergence, indicating that the images may be uncorrelated or non-overlapping.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hystorian.processing.distortion.project_onto_jacobian">
+<span class="sig-prename descclassname"><span class="pre">hystorian.processing.distortion.</span></span><span class="sig-name descname"><span class="pre">project_onto_jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jac</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mat</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.processing.distortion.project_onto_jacobian" title="Link to this definition"></a></dt>
+<dd><p>Projects a matrix onto the Jacobian by computing the sum of element-wise products.</p>
+<p>This function multiplies the Jacobian array and the input matrix element-wise and then sums over all spatial axes.
+The result is a vector where each element represents the projection of the input matrix onto one parameter direction
+of the Jacobian.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>jac</strong> (<em>ndarray</em>) – The Jacobian matrix, typically of shape (num_params, H, W) for 2D images or (num_params, D, H, W) for 3D images.</p></li>
+<li><p><strong>mat</strong> (<em>ndarray</em>) – The matrix to project, typically of shape (H, W) for 2D or (D, H, W) for 3D.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The projection result, a vector of length num_params.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>In the original code, the Jacobian was stored as a 2D [K*H, W] array, and the code looped through K, splitting the matrix into K submatrices.</dt><dd><p>Each submatrix and the input matrix were flattened into vectors, and a dot product was applied.
+This is equivalent to multiplying the two matrices together element-by-element, then summing the result.
+Here, the Jacobian is stored as a 3D array [K, H, W], so broadcasting is used to avoid explicit looping.
+The summation is performed over all spatial axes, which generalizes to higher dimensions.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hystorian.processing.distortion.update_warping_matrix">
+<span class="sig-prename descclassname"><span class="pre">hystorian.processing.distortion.</span></span><span class="sig-name descname"><span class="pre">update_warping_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motion_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'affine'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.processing.distortion.update_warping_matrix" title="Link to this definition"></a></dt>
+<dd><p>Updates the transformation matrix by applying the parameter increments computed during ECC optimization.</p>
+<p>This function supports multiple motion models, including translation, affine, euclidean, homography,
+and their 3D variants. The update is performed by adding the parameter increments to the appropriate
+elements of the transformation matrix, according to the selected motion type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>map_matrix</strong> (<em>ndarray</em>) – The current transformation matrix to be updated. For 2D images, this is typically a 3x3 matrix.
+For 3D images, this is typically a 4x4 matrix.</p></li>
+<li><p><strong>update</strong> (<em>ndarray</em><em> or </em><em>sequence</em>) – The parameter increments to be applied to the transformation matrix. The length and meaning of
+this vector depend on the motion type.</p></li>
+<li><p><strong>motion_type</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of transformation model. Supported values are “translation”, “affine”, “euclidean”,
+“homography”, and their 3D variants. Default is “affine”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The updated transformation matrix.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="general-correction">
+<h2>General Correction<a class="headerlink" href="#general-correction" title="Link to this heading"></a></h2>
+<p>Functions for general image correction and preprocessing.</p>
+<dl class="py function" id="module-hystorian.processing.correction">
+<dt class="sig sig-object py" id="hystorian.processing.correction.line_fit">
+<span class="sig-prename descclassname"><span class="pre">hystorian.processing.correction.</span></span><span class="sig-name descname"><span class="pre">line_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.processing.correction.line_fit" title="Link to this definition"></a></dt>
+<dd><p>Do a nth order polynomial line flattening</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line</strong> (<em>1d array-like</em>)</p></li>
+<li><p><strong>order</strong> (<em>integer</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>result</strong> – same shape as data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>1d array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hystorian.processing.correction.line_flatten_image">
+<span class="sig-prename descclassname"><span class="pre">hystorian.processing.correction.</span></span><span class="sig-name descname"><span class="pre">line_flatten_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.processing.correction.line_flatten_image" title="Link to this definition"></a></dt>
+<dd><p>Do a line flattening</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>2d array</em>)</p></li>
+<li><p><strong>order</strong> (<em>integer</em>)</p></li>
+<li><p><strong>axis</strong> (<em>integer</em>) – axis perpendicular to lines</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>result</strong> – same shape as data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hystorian.processing.correction.plane_flatten_image">
+<span class="sig-prename descclassname"><span class="pre">hystorian.processing.correction.</span></span><span class="sig-name descname"><span class="pre">plane_flatten_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.processing.correction.plane_flatten_image" title="Link to this definition"></a></dt>
+<dd><p>Do a plane flattening</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>2d array</em>)</p></li>
+<li><p><strong>order</strong> (<em>integer</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>result</strong> – same shape as data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="spm-utilities">
+<h2>SPM Utilities<a class="headerlink" href="#spm-utilities" title="Link to this heading"></a></h2>
+<p>Tools and helpers specific to Scanning Probe Microscopy data.</p>
+<dl class="py function" id="module-hystorian.processing.spm">
+<dt class="sig sig-object py" id="hystorian.processing.spm.binarize_phase">
+<span class="sig-prename descclassname"><span class="pre">hystorian.processing.spm.</span></span><span class="sig-name descname"><span class="pre">binarize_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">_ScalarT</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">_ScalarT</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#hystorian.processing.spm.binarize_phase" title="Link to this definition"></a></dt>
+<dd><p>Binarize a phase image by finding the midpoint between two largest peaks in the histogram of phases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phase</strong> (<em>npt.NDArray</em>) – Phase image to binarize</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Binarized phase image, where values below the midpoint are 0 and above are 1</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>npt.NDArray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hystorian.processing.spm.clean_loop">
+<span class="sig-prename descclassname"><span class="pre">hystorian.processing.spm.</span></span><span class="sig-name descname"><span class="pre">clean_loop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.processing.spm.clean_loop" title="Link to this definition"></a></dt>
+<dd><p>Used to determine if a SSPFM loop is good or not by calculating the area encompassed by the
+hysteresis curve and comparing it to a threshold</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bias</strong> (<em>nd-array</em>) – 3d-array containing the bias applied to each point of the grid</p></li>
+<li><p><strong>phase</strong> (<em>nd-array</em>) – 3d-array containing the phase applied to each point of the grid</p></li>
+<li><p><strong>amp</strong> (<em>nd-array</em>) – 3d-array containing the amplitude applied to each point of the grid</p></li>
+<li><p><strong>threshold</strong> (<em>int</em><em> or </em><em>float</em><em>, </em><em>optional</em>) – minimal value of the loop area to be considered a good loop (default: None)
+if set to None will use threshold = np.mean(area_grid_full) - 2 * np.std(area_grid_full)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>good_bias</strong> (<em>list</em>) – list of the bias corresponding to good loops</p></li>
+<li><p><strong>good_phase</strong> (<em>list</em>) – list of the phase corresponding to good loops</p></li>
+<li><p><strong>good_amp</strong> (<em>list</em>) – list of the amplitudes corresponding to good loops</p></li>
+<li><p><strong>mask</strong> (<em>list</em>) – a 2D mask where a 1 correspond to a good loop and 0 to a bad loop, can be used to mask
+the input data.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hystorian.processing.spm.pfm_params_map">
+<span class="sig-prename descclassname"><span class="pre">hystorian.processing.spm.</span></span><span class="sig-name descname"><span class="pre">pfm_params_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">_ScalarT</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">_ScalarT</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">_ScalarT</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#hystorian.processing.spm.pfm_params_map" title="Link to this definition"></a></dt>
+<dd><p>PFM_params_map calculates physically relevant hysteresis parameters from bias and phase channels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bias</strong> (<em>npt.NDArray</em>) – array containing the bias acquired during an SSPFM. This should be the “on” bias computed with extract_hist</p></li>
+<li><p><strong>phase</strong> (<em>npt.NDArray</em>) – array containing the phase acquired during an SSPFM. This should be the “off” phase computed with extract_hist</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>coerc_pos</strong> (<em>npt.NDArray</em>) – the positive coercive bias</p></li>
+<li><p><strong>coerc_neg</strong> (<em>npt.NDArray</em>) – the negative coercive bias</p></li>
+<li><p><strong>step_left</strong> (<em>npt.NDArray</em>) – The size of the phase jump (left side)</p></li>
+<li><p><strong>step_right</strong> (<em>npt.NDArray</em>) – The size of the phase jump (right side)</p></li>
+<li><p><strong>imprint</strong> (<em>npt.NDArray</em>) – The imprint of the switching loop</p></li>
+<li><p><strong>phase_shift</strong> (<em>npt.NDArray</em>) – The phase shift of the switching loop</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hystorian.processing.spm.shift_and_wrap_phase">
+<span class="sig-prename descclassname"><span class="pre">hystorian.processing.spm.</span></span><span class="sig-name descname"><span class="pre">shift_and_wrap_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">_ScalarT</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">_ScalarT</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#hystorian.processing.spm.shift_and_wrap_phase" title="Link to this definition"></a></dt>
+<dd><p>Finds the smallest shift that minimizes the phase jump in a phase series</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phase</strong> (<em>a 1D array</em><em> of </em><em>consecutive phase measurements</em>)</p></li>
+<li><p><strong>phase_step</strong> (<em>the algorithm will try shifts every phase_step. Increase this to speed up execution.</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>The phase image shifted such that there is the smallest jumps between consecutive phase points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="operations">
+<h2>Operations<a class="headerlink" href="#operations" title="Link to this heading"></a></h2>
+<p>General mathematical and image operations for data processing.</p>
+<dl class="py function" id="module-hystorian.processing.operation">
+<dt class="sig sig-object py" id="hystorian.processing.operation.gauss_area">
+<span class="sig-prename descclassname"><span class="pre">hystorian.processing.operation.</span></span><span class="sig-name descname"><span class="pre">gauss_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hystorian.processing.operation.gauss_area" title="Link to this definition"></a></dt>
+<dd><p>Determine the area created by the polygon formed by x,y using the Gauss’s area formula (also
+called shoelace formula)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – values along the x axis</p></li>
+<li><p><strong>y</strong> (<em>array_like</em>) – values along the x axis</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>value corresponding at the encompassed area</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="experiments.html" class="btn btn-neutral float-left" title="Experiments" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Loïc Musy, Ralph Bulanadi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
