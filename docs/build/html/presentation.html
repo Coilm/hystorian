@@ -1,0 +1,459 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Walkthrough: How Does Hystorian Works? &mdash; Hystorian 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=51b770b3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Processing" href="processing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Hystorian
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="hyfile.html">HyFile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conversion.html">File Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="processing.html">Processing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Walkthrough: How Does Hystorian Works?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-extract-the-data">1. How to extract the data?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-hyextractor">Using <code class="docutils literal notranslate"><span class="pre">HyExtractor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-hyfile">Using <code class="docutils literal notranslate"><span class="pre">HyFile</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-read-the-data">2. How to read the data?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#regex-search">Regex search</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-modify-the-data">3. How to modify the data?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-dirty-way">The Dirty Way</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#the-proper-way">The Proper Way</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#distortion-correction">Distortion Correction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-distortion-correction-with-apply-and-multiple-apply">Use distortion correction with <code class="docutils literal notranslate"><span class="pre">apply</span></code> and <code class="docutils literal notranslate"><span class="pre">multiple_apply</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Hystorian</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Walkthrough: How Does Hystorian Works?</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/presentation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="walkthrough-how-does-hystorian-works">
+<h1>Walkthrough: How Does Hystorian Works?<a class="headerlink" href="#walkthrough-how-does-hystorian-works" title="Link to this heading"></a></h1>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hystorian.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">HyFile</span><span class="p">,</span> <span class="n">HyPath</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="c1"># Cleanup the environment:</span>
+<span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;pfm1.hdf5&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;pfm1.hdf5&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+<span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;pfm2.hdf5&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;pfm2.hdf5&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<section id="how-to-extract-the-data">
+<h2>1. How to extract the data?<a class="headerlink" href="#how-to-extract-the-data" title="Link to this heading"></a></h2>
+<section id="using-hyextractor">
+<h3>Using <code class="docutils literal notranslate"><span class="pre">HyExtractor</span></code><a class="headerlink" href="#using-hyextractor" title="Link to this heading"></a></h3>
+<p>The simplest (but not recommended) way to extract the data is to use the
+<code class="docutils literal notranslate"><span class="pre">HyExtractor</span></code> class. It will extract the data from a supported file
+and return a dictionary with the data, metadata, and attributes.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hystorian.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">HyExtractor</span>
+<span class="n">datapath1</span> <span class="o">=</span> <span class="s2">&quot;path/to/your/file.hystorian&quot;</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">HyExtractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">datapath1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To access the data, metadata, and attributes, you can use the following
+attributes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">data</span>        <span class="c1"># The data extracted from the file</span>
+<span class="n">d</span><span class="o">.</span><span class="n">metadata</span>    <span class="c1"># The metadata of the file</span>
+<span class="n">d</span><span class="o">.</span><span class="n">attributes</span>  <span class="c1"># The attributes of the file</span>
+</pre></div>
+</div>
+<p>This can be used for quick and dirty extraction of the data, during the
+exploratory phase of your project. However, it is not recommended for
+production code, as it does not allow to store the future processing in
+the same file, and does not allow to store the data in a structured way.</p>
+</section>
+<section id="using-hyfile">
+<h3>Using <code class="docutils literal notranslate"><span class="pre">HyFile</span></code><a class="headerlink" href="#using-hyfile" title="Link to this heading"></a></h3>
+<p>The proper way to extract the data is to use the <code class="docutils literal notranslate"><span class="pre">HyFile</span></code> class. It
+allows to store the data, metadata, and attributes in a structured way,
+and allows to store the future processing in the same file.</p>
+<p>HyFile as a <code class="docutils literal notranslate"><span class="pre">__enter__</span></code> and <code class="docutils literal notranslate"><span class="pre">__exit__</span></code> methods, so it can be used in
+a <code class="docutils literal notranslate"><span class="pre">with</span></code> statement. This will ensure that the file is properly closed
+after the processing is done.</p>
+<p>HyFile support the following modes to open the file: - <code class="docutils literal notranslate"><span class="pre">r</span></code>: Readonly,
+file must exist. (default) - <code class="docutils literal notranslate"><span class="pre">r+</span></code>: Read/write, file must exist. -
+<code class="docutils literal notranslate"><span class="pre">w</span></code>: Create file, truncate if exists. - <code class="docutils literal notranslate"><span class="pre">w-</span></code> or <code class="docutils literal notranslate"><span class="pre">x</span></code>: Create file,
+fail if exists. - <code class="docutils literal notranslate"><span class="pre">a</span></code> : Read/write if exists, create otherwise.</p>
+<p>(Note: Due to a bug, <code class="docutils literal notranslate"><span class="pre">r+</span></code> works like <code class="docutils literal notranslate"><span class="pre">a</span></code> in the current version of
+Hystorian, this will be fixed soon)</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;pfm1.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span> <span class="c1"># The file did not exist before so it is created</span>
+    <span class="o">...</span> <span class="c1"># We do nothing</span>
+</pre></div>
+</div>
+<p>Now, to add the data from an IBW file to a HDF5 file, you can use the
+following code:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">datapath1</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;data/P3_00_Const_3000mV_0032.ibw&quot;</span><span class="p">)</span> <span class="c1"># This is the path to the IBW file you want to add</span>
+
+<span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;pfm1.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">extract_data</span><span class="p">(</span><span class="n">datapath1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Using <code class="docutils literal notranslate"><span class="pre">merge()</span></code> it is possible to merge two hdf5 files together.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">datapath2</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;data/P3_00_Const_3000mV_0034.ibw&quot;</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;pfm2.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">extract_data</span><span class="p">(</span><span class="n">datapath2</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;pfm1.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="s1">&#39;pfm2.hdf5&#39;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;pfm2.hdf5&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="how-to-read-the-data">
+<h2>2. How to read the data?<a class="headerlink" href="#how-to-read-the-data" title="Link to this heading"></a></h2>
+<p>And now <code class="docutils literal notranslate"><span class="pre">pfm1.hdf5</span></code> contains the data from the IBW file, and you can
+access it using the <code class="docutils literal notranslate"><span class="pre">HyFile</span></code> class, and the
+<code class="docutils literal notranslate"><span class="pre">read(path</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">search</span> <span class="pre">=</span> <span class="pre">False)</span></code> method.</p>
+<p><code class="docutils literal notranslate"><span class="pre">path</span></code> is the path to the Group or Dataset you want to read. If the
+value is None, read the root of the folder. If the path lead to Groups,
+it will return a list of the subgroups, if it lead to a Dataset, it will
+return the data as a numpy array.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;pfm1.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;datasets&#39;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0032&#39;</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0032/Phase1Retrace&#39;</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">([])</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">&#39;datasets&#39;</span><span class="p">,</span> <span class="s1">&#39;metadata&#39;</span><span class="p">,</span> <span class="s1">&#39;process&#39;</span><span class="p">]</span>
+<span class="p">[</span><span class="s1">&#39;P3_00_Const_3000mV_0032&#39;</span><span class="p">,</span> <span class="s1">&#39;P3_00_Const_3000mV_0034&#39;</span><span class="p">]</span>
+<span class="p">[</span><span class="s1">&#39;Amplitude1Retrace&#39;</span><span class="p">,</span> <span class="s1">&#39;Amplitude2Retrace&#39;</span><span class="p">,</span> <span class="s1">&#39;FrequencyRetrace&#39;</span><span class="p">,</span> <span class="s1">&#39;HeightRetrace&#39;</span><span class="p">,</span> <span class="s1">&#39;Phase1Retrace&#39;</span><span class="p">,</span> <span class="s1">&#39;Phase1Trace&#39;</span><span class="p">,</span> <span class="s1">&#39;Phase2Retrace&#39;</span><span class="p">,</span> <span class="s1">&#39;Phase2Trace&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<img alt="_images/presentation_9_1.png" src="_images/presentation_9_1.png" />
+<section id="regex-search">
+<h3>Regex search<a class="headerlink" href="#regex-search" title="Link to this heading"></a></h3>
+<p>You can set <code class="docutils literal notranslate"><span class="pre">search=True</span></code> to search all the datasets which match with
+the string you pass. For example <code class="docutils literal notranslate"><span class="pre">read('datasets/*',</span> <span class="pre">search=True)</span></code>
+will return all the datasets in the <code class="docutils literal notranslate"><span class="pre">datasets</span></code> group.</p>
+<p>You can also use the <code class="docutils literal notranslate"><span class="pre">path_search(path)</span></code> method to search for a path
+in the file. It will return a list of all the paths which match with the
+string you pass. Both <code class="docutils literal notranslate"><span class="pre">read()</span></code> and <code class="docutils literal notranslate"><span class="pre">path_search()</span></code> methods uses
+regex formatting. I would recommend using <a class="reference external" href="https://regex101.com/">https://regex101.com/</a> to check
+your regex rule.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Note: Be carefull, in regex what we usually use as a wildcard is not <code class="docutils literal notranslate"><span class="pre">*</span></code> but <code class="docutils literal notranslate"><span class="pre">.*</span></code>.</p>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;pfm1.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">path_search</span><span class="p">(</span><span class="s1">&#39;datasets/.*&#39;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;---&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;datasets/.*&#39;</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0032/Amplitude1Retrace&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0032/Amplitude2Retrace&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0032/FrequencyRetrace&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0032/HeightRetrace&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0032/Phase1Retrace&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0032/Phase1Trace&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0032/Phase2Retrace&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0032/Phase2Trace&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0034/Amplitude1Retrace&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0034/Amplitude2Retrace&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0034/FrequencyRetrace&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0034/HeightRetrace&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0034/Phase1Retrace&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0034/Phase1Trace&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0034/Phase2Retrace&#39;</span><span class="p">),</span> <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0034/Phase2Trace&#39;</span><span class="p">)]</span>
+<span class="o">---</span>
+<span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Using <code class="docutils literal notranslate"><span class="pre">search=True</span></code> allows for an easy way to access all datasets in a
+group without having to know their exact names.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;pfm1.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;datasets/.*0032.*&#39;</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="kc">True</span><span class="p">)):</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+</pre></div>
+</div>
+<img alt="_images/presentation_13_0.png" src="_images/presentation_13_0.png" />
+<p>Using <code class="docutils literal notranslate"><span class="pre">path_search</span></code> instead of <code class="docutils literal notranslate"><span class="pre">read(path,</span> <span class="pre">search=True)</span></code> allows you
+to get the paths of the datasets, which can be useful if you want to
+display the names of the datasets in a plot for example.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;pfm1.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">((</span><span class="n">f</span><span class="o">.</span><span class="n">path_search</span><span class="p">(</span><span class="s1">&#39;datasets/.*0032.*&#39;</span><span class="p">))):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/presentation_15_0.png" src="_images/presentation_15_0.png" />
+</section>
+</section>
+<section id="how-to-modify-the-data">
+<h2>3. How to modify the data?<a class="headerlink" href="#how-to-modify-the-data" title="Link to this heading"></a></h2>
+<section id="the-dirty-way">
+<h3>The Dirty Way<a class="headerlink" href="#the-dirty-way" title="Link to this heading"></a></h3>
+<p>As you can see the <code class="docutils literal notranslate"><span class="pre">Phase2</span></code> channel has a case of phase unwrapping.
+Here I’ll show you how to use one of the many tools in hystorian to
+correct this issue, and how to store the processing in the hdf5 file.</p>
+<p>The easiest way is to simply manipulate the numpy array provided by the
+<code class="docutils literal notranslate"><span class="pre">read()</span></code> method,</p>
+<p>however this is not the recommended way to do it, as it does not allow
+to store the processing in the file. It is still usefull though during
+the exploratory phase of your project, to avoid writting a lot of test
+manipulations into the hdf5 file.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Using this method will not save the processing into the hdf5 file.</p>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hystorian.processing</span><span class="w"> </span><span class="kn">import</span> <span class="n">spm</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;pfm1.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">phase2</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0032/Phase1Retrace&#39;</span><span class="p">)</span>
+
+<span class="n">corrected_phase2</span> <span class="o">=</span> <span class="n">spm</span><span class="o">.</span><span class="n">shift_and_wrap_phase</span><span class="p">(</span><span class="n">phase2</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">phase2</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Original Phase2&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">corrected_phase2</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Corrected Phase2&#39;</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([]);</span>
+</pre></div>
+</div>
+<img alt="_images/presentation_19_0.png" src="_images/presentation_19_0.png" />
+<section id="the-proper-way">
+<h4>The Proper Way<a class="headerlink" href="#the-proper-way" title="Link to this heading"></a></h4>
+<p>Now that we have a process that work well, we want to save it into the
+hdf5 file. To do so we will use the <code class="docutils literal notranslate"><span class="pre">apply()</span></code> method of the <code class="docutils literal notranslate"><span class="pre">HyFile</span></code>
+class. This method allows to apply a function to a dataset, and store
+the result in the file.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Something to be carefull of, is that when you use <code class="docutils literal notranslate"><span class="pre">apply()</span></code>
+you <strong>CANNOT</strong> pass a string as the path of the dataset, you must use a
+HyPath object.</p>
+<p>This is because the <code class="docutils literal notranslate"><span class="pre">apply()</span></code> can take any function as first argument,
+and some of these functions may need a string as an argument, so it
+is necessary to differentiate between an arbitrary string and a path
+to a dataset.</p>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;pfm1.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">spm</span><span class="o">.</span><span class="n">shift_and_wrap_phase</span><span class="p">,</span>
+            <span class="n">HyPath</span><span class="p">(</span><span class="s1">&#39;datasets/P3_00_Const_3000mV_0032/Phase2Retrace&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>However we would like to modify all the datasets that contain a phase.</p>
+<p>Thankfully, it is straightforward to do so using <code class="docutils literal notranslate"><span class="pre">multiple_apply()</span></code>
+and <code class="docutils literal notranslate"><span class="pre">path_search()</span></code>.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;pfm1.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">multiple_apply</span><span class="p">(</span><span class="n">spm</span><span class="o">.</span><span class="n">shift_and_wrap_phase</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">path_search</span><span class="p">(</span><span class="s2">&quot;datasets.*Phase.*&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The issue now is that we have a folder in <code class="docutils literal notranslate"><span class="pre">process</span></code> that is useless.</p>
+<p>It is easy to delete a folder in the hdf5 file using the <code class="docutils literal notranslate"><span class="pre">delete()</span></code>
+method of the <code class="docutils literal notranslate"><span class="pre">HyFile</span></code> class. This method allows to delete a path from
+the file, and if you set <code class="docutils literal notranslate"><span class="pre">renumber=True</span></code>, it will renumber the paths
+in process after the deleted path.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;pfm1.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">renumber</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Equivalent to:</span>
+    <span class="c1"># f.delete(f.path_search(&quot;process.*001.*&quot;)[0], renumber=True)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="distortion-correction">
+<h3>Distortion Correction<a class="headerlink" href="#distortion-correction" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hystorian.processing.distortion</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_transform</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hystorian.processing.distortion</span><span class="w"> </span><span class="kn">import</span> <span class="n">custom_warp</span> <span class="k">as</span> <span class="n">hywarp</span>
+</pre></div>
+</div>
+</section>
+<section id="use-distortion-correction-with-apply-and-multiple-apply">
+<h3>Use distortion correction with <code class="docutils literal notranslate"><span class="pre">apply</span></code> and <code class="docutils literal notranslate"><span class="pre">multiple_apply</span></code><a class="headerlink" href="#use-distortion-correction-with-apply-and-multiple-apply" title="Link to this heading"></a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">filelist</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;data/*.ibw&#39;</span><span class="p">)</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;distort_demo.hdf5&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;distort_demo.hdf5&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+<span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;distort_demo.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">filelist</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">extract_data</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Lets have a look at the topography, which we will use to compute the
+correction.</p>
+<p>(A channel that should not change during the whole experiment is
+required for the correction to work well)</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;distort_demo.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">h_path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">path_search</span><span class="p">(</span><span class="s1">&#39;datasets.*HeightRetrace&#39;</span><span class="p">)):</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">h_path</span><span class="p">))</span>
+</pre></div>
+</div>
+<img alt="_images/presentation_31_0.png" src="_images/presentation_31_0.png" />
+<p>To use <code class="docutils literal notranslate"><span class="pre">find_transform(ir,</span> <span class="pre">iw,</span> <span class="pre">method,</span> <span class="pre">**kwargs)</span></code>, it is currently
+bettere to use <code class="docutils literal notranslate"><span class="pre">apply</span></code> and a <code class="docutils literal notranslate"><span class="pre">for</span></code> loop.</p>
+<p>For now, <code class="docutils literal notranslate"><span class="pre">multiple_apply</span></code> work when the looped parameter is the first
+one. In the case of <code class="docutils literal notranslate"><span class="pre">find_transform()</span></code> we are looping over <code class="docutils literal notranslate"><span class="pre">iw</span></code>.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;distort_demo.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">heights</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">path_search</span><span class="p">(</span><span class="s1">&#39;datasets.*Height.*&#39;</span><span class="p">)</span>
+    <span class="n">increment_proc</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">for</span> <span class="n">height</span> <span class="ow">in</span> <span class="n">heights</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">find_transform</span><span class="p">,</span>
+                <span class="n">heights</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">height</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="s2">&quot;CENSURE&quot;</span><span class="p">,</span>
+                <span class="n">increment_proc</span><span class="o">=</span><span class="n">increment_proc</span><span class="p">,</span>
+                <span class="n">output_names</span><span class="o">=</span><span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">height</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">increment_proc</span><span class="p">:</span>
+            <span class="n">increment_proc</span> <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>We can use <code class="docutils literal notranslate"><span class="pre">multiple_apply</span></code> with <code class="docutils literal notranslate"><span class="pre">hywarp</span></code></p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>I would not recommend using <code class="docutils literal notranslate"><span class="pre">warp()</span></code> from skimage as a
+replacement for <code class="docutils literal notranslate"><span class="pre">hywarp()</span></code>. It does not use the same convention for the
+axis <code class="docutils literal notranslate"><span class="pre">(x,y)</span></code> vs <code class="docutils literal notranslate"><span class="pre">(i,j)</span></code>, and moreover in the backend <code class="docutils literal notranslate"><span class="pre">hywarp()</span></code> uses
+affine_transform and geometric_transform, which is more performant
+than warp.</p>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;distort_demo.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">mat_paths</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">path_search</span><span class="p">(</span><span class="s1">&#39;.*find_transform.*&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">mat_path</span> <span class="ow">in</span> <span class="n">mat_paths</span><span class="p">:</span>
+        <span class="n">output_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">path_search</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;datasets/.*</span><span class="si">{</span><span class="n">mat_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">.*&#39;</span><span class="p">)]</span>
+
+        <span class="n">f</span><span class="o">.</span><span class="n">multiple_apply</span><span class="p">(</span><span class="n">hywarp</span><span class="p">,</span>
+                         <span class="n">f</span><span class="o">.</span><span class="n">path_search</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;datasets/.*</span><span class="si">{</span><span class="n">mat_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">.*&#39;</span><span class="p">),</span>
+                         <span class="n">mat</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">mat_path</span><span class="p">),</span>
+                         <span class="n">output_names</span> <span class="o">=</span> <span class="n">output_names</span><span class="p">,</span>
+                         <span class="n">increment_proc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;distort_demo.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">h_path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">path_search</span><span class="p">(</span><span class="s1">&#39;.*process.*custom_warp.*HeightRetrace&#39;</span><span class="p">)):</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">h_path</span><span class="p">))</span>
+</pre></div>
+</div>
+<img alt="_images/presentation_36_0.png" src="_images/presentation_36_0.png" />
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+
+<span class="k">with</span> <span class="n">HyFile</span><span class="p">(</span><span class="s1">&#39;distort_demo.hdf5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">cmap</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="mi">32</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">36</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;Greens&#39;</span><span class="p">,</span> <span class="s1">&#39;Blues&#39;</span><span class="p">,</span> <span class="s1">&#39;Reds&#39;</span><span class="p">]):</span>
+        <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">path_search</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;datasets.*00</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">.*HeightRetrace&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">path_search</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;process.*custom_warp.*00</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">.*HeightRetrace&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/presentation_37_0.png" src="_images/presentation_37_0.png" />
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="processing.html" class="btn btn-neutral float-left" title="Processing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Loïc Musy, Ralph Bulanadi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

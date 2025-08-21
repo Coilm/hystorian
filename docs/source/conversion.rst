@@ -1,4 +1,4 @@
-File Conversion
+File Conversion (i/o)
 ===============
 
 Hystorian provides utilities to convert raw data files from common SPM instruments into HDF5 format.

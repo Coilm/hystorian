@@ -51,6 +51,8 @@ Core Modules
 How to Use
 ~~~~~~~~~~
 
+Here is a short working example:
+
 .. code-block:: python
 
     # Open and extract data from an HDF5 file
@@ -62,6 +64,8 @@ How to Use
     from hystorian.processing.distortion import find_transform_ecc
     warp_matrix = find_transform_ecc(reference_image, image_to_align)
 
+If you want a more detailed walkthrough go to :doc:`presentation`.
+
 Documentation Contents
 ----------------------
 .. toctree::
@@ -71,6 +75,7 @@ Documentation Contents
     conversion
     experiments
     processing
+    presentation
 
 Publication Source
 ------------------
